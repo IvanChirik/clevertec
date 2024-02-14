@@ -1,34 +1,39 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { Grid, Layout } from 'antd';
 
-import reactLogo from '/react.svg';
-import viteLogo from '/vite.svg';
-import tsLogo from '/ts.svg';
-import './main-page.css';
+import main_background from "/images/main_background.png"
+
+import { MainSidebar, MainContent, MainFooter, MainHeader } from '@components/Layout';
+import { useSelector } from 'react-redux';
+import { RootState } from '@redux/configure-store';
 
 export const MainPage: React.FC = () => {
-    const [count, setCount] = useState(0);
+    const collapsed = useSelector((state: RootState) => state.app.collapsed);
+    const { useBreakpoint } = Grid;
+    const screens = useBreakpoint();
+
+    const layoutPaddingLeft = (screens?.xs) ? '0' : (collapsed ? '64px' : '208px');
 
     return (
-        <>
-            <div>
-                <a href='https://vitejs.dev' target='_blank'>
-                    <img src={viteLogo} className='logo' alt='Vite logo' />
-                </a>
-                <a href='https://react.dev' target='_blank'>
-                    <img src={reactLogo} className='logo react' alt='React logo' />
-                </a>
-                <a href='https://www.typescriptlang.org/' target='_blank'>
-                    <img src={tsLogo} className='logo' alt='TS logo' />
-                </a>
-            </div>
-            <h1>Vite + React + TS</h1>
-            <div className='card'>
-                <button onClick={() => setCount((count) => count + 1)}>count is {count}</button>
-                <p>
-                    Edit <code>src/pages/main-page.tsx</code> and save to test HMR
-                </p>
-            </div>
-            <p className='read-the-docs'>Click on the Vite and React logos to learn more</p>
-        </>
+        <div style={{ maxWidth: "1440px", margin: "0 auto", position: "relative" }}>
+            <Layout style={{ position: "relative" }}>
+                <MainSidebar />
+                <Layout style={{
+                    position: 'relative',
+                    transition: "padding-left 0.146s linear",
+                    paddingLeft: layoutPaddingLeft,
+                    minHeight: "100dvh",
+                    backgroundPosition: "center",
+                    backgroundImage: `url(${main_background})`,
+                    backgroundSize: "cover",
+                    backgroundRepeat: "no-repeat",
+
+                }}>
+                    <MainHeader />
+                    <MainContent />
+                    <MainFooter />
+                </Layout>
+            </Layout >
+        </div>
     );
 };
