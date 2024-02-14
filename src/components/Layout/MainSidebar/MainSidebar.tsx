@@ -100,7 +100,6 @@ export const MainSidebar = () => {
             :
             <Image
               style={{ marginTop: "44px", transition: "width 0.5s ease-in-out, margin-top 0.5s ease-in-out" }}
-
               width={133}
               preview={false}
               src={FullLogoIcon}

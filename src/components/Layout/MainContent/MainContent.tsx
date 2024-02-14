@@ -1,9 +1,16 @@
-import { HeartFilled, CalendarTwoTone, IdcardTwoTone } from "@ant-design/icons"
-import { Card, Button } from "antd"
+import { HeartFilled, IdcardTwoTone } from "@ant-design/icons"
+import { Card, Button, Image } from "antd"
 import { Content } from "antd/lib/layout/layout"
-import React from "react"
+import React from "react";
+import CalenderIcon from "@public//icons/content-calendar.svg";
+import { useSelector } from "react-redux";
+import { RootState } from "@redux/configure-store";
+import useWindowWidth from "@hooks/use-window-width";
+
 
 export const MainContent: React.FC = () => {
+  const collapsed = useSelector((state: RootState) => state.app.collapsed);
+  const width = useWindowWidth()
   return (
     <Content style={{ overflow: 'initial' }}>
       <div
@@ -51,8 +58,12 @@ export const MainContent: React.FC = () => {
                 flex: 1
               }}
               size='small'
-              title="Расписать тренировки"
-              headStyle={{ wordWrap: "break-word", display: "flex", alignItems: "center", justifyContent: "center", height: "45px" }}
+              title={<span >Расписать{(!collapsed && width < 834 && width > 360) ? <br /> : ' '}тренировки</span>}
+              headStyle={{
+                wordWrap: "break-word", display: "flex", alignItems: "center",
+                justifyContent: `${(!collapsed && width < 834 && width > 360) ? 'start' : 'center'}`,
+                padding: `${(!collapsed && width < 834 && width > 360) ? '25px' : '0px'}`, height: "45px"
+              }}
               bodyStyle={{ textAlign: "center", height: "56px", padding: "12px" }}
               bordered={false} >
               <Button type='link'>
@@ -65,12 +76,19 @@ export const MainContent: React.FC = () => {
                 flex: 1
               }}
               size='small'
-              title="Назначить календарь"
-              headStyle={{ wordWrap: "break-word", display: "flex", alignItems: "center", justifyContent: "center", height: "45px" }}
+              title={<span >Назначить{(!collapsed && width < 834 && width > 360) ? <br /> : ' '}календарь</span>}
+              headStyle={{
+                wordWrap: "break-word", display: "flex", alignItems: "center",
+                justifyContent: `${(!collapsed && width < 834 && width > 360) ? 'start' : 'center'}`,
+                padding: `${(!collapsed && width < 834 && width > 360) ? '25px' : '0px'}`,
+                height: "45px",
+              }}
               bodyStyle={{ textAlign: "center", height: "56px", padding: "12px" }}
               bordered={false} >
               <Button type='link'>
-                <CalendarTwoTone />
+                <Image src={CalenderIcon} alt='Calendar' style={{
+                  paddingRight: '10px'
+                }} />
                 Календарь
               </Button>
             </Card>
@@ -79,8 +97,13 @@ export const MainContent: React.FC = () => {
                 flex: 1
               }}
               size='small'
-              title="Заполнить Профиль"
-              headStyle={{ wordWrap: "break-word", display: "flex", alignItems: "center", justifyContent: "center", height: "45px" }}
+              title={<span >Заполнить{(!collapsed && width < 834 && width > 360) ? <br /> : ' '}профиль</span>}
+              headStyle={{
+                wordWrap: "break-word", display: "flex", alignItems: "center",
+                justifyContent: `${(!collapsed && width < 834 && width > 360) ? 'start' : 'center'}`,
+                padding: `${(!collapsed && width < 834 && width > 360) ? '25px' : '0px'}`,
+                height: "45px"
+              }}
               bodyStyle={{ textAlign: "center", height: "56px", padding: "12px" }}
               bordered={false} >
               <Button type='link'>
