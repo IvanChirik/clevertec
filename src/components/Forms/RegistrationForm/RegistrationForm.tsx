@@ -1,23 +1,35 @@
 import { GooglePlusOutlined } from "@ant-design/icons";
 import { Button, Form, Input, Tabs, Image } from "antd";
-import { Link, Navigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import FullLogoIcon from "/icons/full-logo-icon.svg";
-import { ROUTER_PATHS } from "../../../routes/index";
+import { ROUTER_PATHS as Paths } from "../../../routes/index";
+import { useRegistrationMutation } from "@services/auth-service";
+import { useEffect } from "react";
+import { IAuthForm } from "@interfaces/auth.interface";
 
-
-export interface IRegistrationFormValues {
-    ['registration-email']?: string;
-    ['registration-password']?: string;
-}
 
 export const RegistrationForm = () => {
-    const onFinish = (values: IRegistrationFormValues) => {
-        console.log('Success:', values);
+    const [registrationPost, { isSuccess, isError, error }] = useRegistrationMutation();
+    const navigate = useNavigate();
+    const onFinish = async (values: IAuthForm) => {
+        if (values.email && values.password)
+            await registrationPost({
+                email: values.email,
+                password: values.password
+            })
     };
-
-    const onFinishFailed = (errorInfo: any) => {
-        console.log('Failed:', errorInfo);
-    };
+    useEffect(() => {
+        if (isSuccess) {
+            navigate(Paths.Result.Registration.Success);
+        }
+        else if (isError && error) {
+            if ('status' in error && error.status === 409)
+                navigate(Paths.Result.Registration.UserExistError);
+        }
+        else if (isError) {
+            navigate(Paths.Result.Registration.Error)
+        }
+    }, [isSuccess, isError])
 
     return (
         <>
@@ -35,7 +47,7 @@ export const RegistrationForm = () => {
                     {
                         label: <Link to={'/auth/login'}>Вход</Link>,
                         key: '1',
-                        children: <Navigate to={ROUTER_PATHS.Auth.Login} />
+                        children: <Navigate to={Paths.Auth.Login} />
                     },
                     {
                         label: <Link to={'/auth/registration'}>Регистрация</Link>,
@@ -44,10 +56,9 @@ export const RegistrationForm = () => {
                             name="registration"
                             initialValues={{ remember: true }}
                             onFinish={onFinish}
-                            onFinishFailed={onFinishFailed}
                         >
                             <Form.Item
-                                name="registration-email"
+                                name="email"
                                 rules={[
                                     {
                                         type: 'email',
@@ -63,7 +74,7 @@ export const RegistrationForm = () => {
                             </Form.Item>
 
                             <Form.Item
-                                name="registration-password"
+                                name="password"
                                 rules={[
                                     {
                                         required: true,
@@ -88,7 +99,7 @@ export const RegistrationForm = () => {
                                     },
                                     ({ getFieldValue }) => ({
                                         validator(_, value) {
-                                            if (!value || getFieldValue('registration-password') === value) {
+                                            if (!value || getFieldValue('password') === value) {
                                                 return Promise.resolve();
                                             }
                                             return Promise.reject(new Error('Пароли не совпадают'));
@@ -120,3 +131,4 @@ export const RegistrationForm = () => {
         </>
     );
 };
+

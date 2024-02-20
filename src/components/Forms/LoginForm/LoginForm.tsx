@@ -1,18 +1,34 @@
 import { GooglePlusOutlined } from "@ant-design/icons";
 import { Button, Checkbox, Form, Input, Image, Tabs } from "antd";
-import { Link, Navigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import FullLogoIcon from "/icons/full-logo-icon.svg";
 import { ROUTER_PATHS } from "../../../routes/index";
+import { useLoginMutation } from "@services/auth-service";
+import { useEffect } from "react";
+import { ROUTER_PATHS as Paths } from "../../../routes/index";
+import { IAuthForm } from "@interfaces/auth.interface";
 
 
 export const LoginForm = () => {
-    const onFinish = (values: any) => {
-        console.log('Success:', values);
+    const [loginPost, { isSuccess, isError }] = useLoginMutation();
+    const navigate = useNavigate();
+    const onFinish = async (values: IAuthForm) => {
+        console.log(values);
+        if (values.email && values.password)
+            await loginPost({
+                email: values.email,
+                password: values.password
+            });
+        return;
     };
+    useEffect(() => {
+        if (isSuccess)
+            navigate(Paths.Main);
+        if (isError) {
+            navigate(Paths.Result.Login.Error);
+        }
+    }, [isSuccess, isError]);
 
-    const onFinishFailed = (errorInfo: any) => {
-        console.log('Failed:', errorInfo);
-    };
 
     return (<> <Image
         style={{
@@ -35,12 +51,11 @@ export const LoginForm = () => {
                         name="login"
                         initialValues={{ remember: true }}
                         onFinish={onFinish}
-                        onFinishFailed={onFinishFailed}
                         autoComplete="off"
                         style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}
                     >
                         <Form.Item
-                            name="login-email"
+                            name="email"
                             rules={[
                                 {
                                     type: 'email',
@@ -56,7 +71,7 @@ export const LoginForm = () => {
                         </Form.Item>
 
                         <Form.Item
-                            name="login-password"
+                            name="password"
                             rules={[{ required: true, message: '' }]}
                         >
                             <Input.Password size="large" placeholder="Пароль" />
