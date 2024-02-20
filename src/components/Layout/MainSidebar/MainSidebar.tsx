@@ -12,17 +12,17 @@ import CollapsedLogoIcon from "/icons/collapsed-logo-icon.svg"
 import CalenderIcon from "/icons/calendar-icon.svg"
 import ExitIcon from "/icons/exit-icon.svg"
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState, setCollapsed } from '@redux/configure-store';
+import { AppDispatch, RootState } from '@redux/configure-store';
 import styles from './MainSidebar.module.scss';
 import useWindowWidth from '@hooks/use-window-width';
+import { appActions } from '@redux/app.slice';
 
 export const MainSidebar = () => {
   const width = useWindowWidth()
   const { useBreakpoint } = Grid;
   const screens = useBreakpoint();
   const collapsed = useSelector((state: RootState) => state.app.collapsed);
-  const dispatch = useDispatch();
-
+  const dispatch = useDispatch<AppDispatch>();
   const { Sider } = Layout;
 
 
@@ -62,7 +62,7 @@ export const MainSidebar = () => {
 
 
   const setNavCollapsed = (value: boolean) => {
-    dispatch(setCollapsed(value));
+    dispatch(appActions.setCollapsed(value));
   };
 
   return (
