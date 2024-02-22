@@ -3,19 +3,23 @@ import { createBrowserHistory } from 'history';
 import { createReduxHistoryContext } from 'redux-first-history';
 import appSlice from './app.slice';
 import { authApi } from '@services/auth-service';
+import authSlice from './auth.slice';
 
 const {
     createReduxHistory,
     routerMiddleware,
     routerReducer
-} = createReduxHistoryContext({ history: createBrowserHistory() });
+} = createReduxHistoryContext({
+    history: createBrowserHistory(),
+});
 
 
 export const store = configureStore({
     reducer: combineReducers({
         app: appSlice,
         [authApi.reducerPath]: authApi.reducer,
-        router: routerReducer
+        router: routerReducer,
+        auth: authSlice
     }),
     middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(routerMiddleware, authApi.middleware),
 });

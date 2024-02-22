@@ -6,6 +6,7 @@ import { Route, Routes } from "react-router-dom";
 import { AUTH_PATH, ROUTER_PATHS as Paths, RESULT_PATH } from "./route-paths";
 import { AuthResult } from "@components/AuthResult/AuthResult";
 import { ChangePassword } from "@components/Forms/ChangePassword/ChangePassword";
+import { ConfirmEmail } from "@components/Forms/ConfirmEmail/ConfirmEmail";
 
 
 
@@ -15,7 +16,7 @@ export const routes = (
         <Route path={AUTH_PATH} element={<AuthPage />} >
             <Route path={Paths.Auth.Login} element={<LoginForm />} />
             <Route path={Paths.Auth.Registration} element={<RegistrationForm />} />
-            <Route path={Paths.Auth.ConfirmEmail} element={<LoginForm />} />
+            <Route path={Paths.Auth.ConfirmEmail} element={<ConfirmEmail />} />
             <Route path={Paths.Auth.ChangePassword} element={<ChangePassword />} />
         </Route>
         <Route path={RESULT_PATH} element={<AuthPage />}>
