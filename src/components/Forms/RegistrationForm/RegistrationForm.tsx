@@ -1,33 +1,36 @@
 import { GooglePlusOutlined } from "@ant-design/icons";
 import { Button, Form, Input, Tabs, Image } from "antd";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import FullLogoIcon from "/icons/full-logo-icon.svg";
 import { ROUTER_PATHS as Paths } from "../../../routes/index";
 import { useRegistrationMutation } from "@services/auth-service";
 import { useEffect } from "react";
 import { IAuthForm } from "@interfaces/auth.interface";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@redux/configure-store";
+import { push } from "redux-first-history";
 
 
 export const RegistrationForm = () => {
-    const [registrationPost, { isSuccess, isError, error }] = useRegistrationMutation();
-    const navigate = useNavigate();
+    const [registration, { isSuccess, isError, error }] = useRegistrationMutation();
+    const dispatch = useDispatch<AppDispatch>();
     const onFinish = async (values: IAuthForm) => {
         if (values.email && values.password)
-            await registrationPost({
+            await registration({
                 email: values.email,
                 password: values.password
             })
     };
     useEffect(() => {
         if (isSuccess) {
-            navigate(Paths.Result.Registration.Success);
+            dispatch(push(Paths.Result.Registration.Success));
         }
         else if (isError && error) {
             if ('status' in error && error.status === 409)
-                navigate(Paths.Result.Registration.UserExistError);
+                dispatch(push(Paths.Result.Registration.UserExistError));
         }
         else if (isError) {
-            navigate(Paths.Result.Registration.Error)
+            dispatch(push(Paths.Result.Registration.Error))
         }
     }, [isSuccess, isError])
 

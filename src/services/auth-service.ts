@@ -1,5 +1,5 @@
 import { API_URL } from '@config/API'
-import { ICheckEmailResponse, ILoginResponse } from '@interfaces/auth.interface'
+import { IAuthErrorResponse, ICheckEmailResponse, ILoginResponse } from '@interfaces/auth.interface'
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 interface IAuthData {
@@ -9,7 +9,11 @@ interface IAuthData {
 
 export const authApi = createApi({
     reducerPath: 'authApi',
-    baseQuery: fetchBaseQuery({ baseUrl: API_URL }),
+    baseQuery: fetchBaseQuery({
+        baseUrl: API_URL,
+        credentials: 'include',
+        mode: 'cors'
+    }),
     endpoints: (builder) => ({
         login: builder.mutation<ILoginResponse, IAuthData>({
             query: (authData) => ({
@@ -30,20 +34,22 @@ export const authApi = createApi({
             transformErrorResponse: (response: { status: string | number }) => response
         }),
 
-        checkEmail: builder.mutation<unknown, Omit<ICheckEmailResponse, 'password'>>({
+        checkEmail: builder.mutation<ICheckEmailResponse, Omit<IAuthData, 'password'>>({
             query: (authData) => ({
                 url: '/auth/check-email',
                 method: 'POST',
                 body: authData
             }),
+            transformErrorResponse: (response: IAuthErrorResponse) => response
         }),
 
-        confirmEmail: builder.mutation<ICheckEmailResponse, Omit<IAuthData, 'message'> & { code: string }>({
+        confirmEmail: builder.mutation<ICheckEmailResponse, Omit<IAuthData, 'password'> & { code: string }>({
             query: (authData) => ({
                 url: '/auth/confirm-email',
                 method: 'POST',
                 body: authData
             }),
+            transformErrorResponse: (response: IAuthErrorResponse) => response
         }),
 
         changePassword: builder.mutation<Omit<ICheckEmailResponse, 'email'>, {

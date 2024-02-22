@@ -1,33 +1,66 @@
 import { GooglePlusOutlined } from "@ant-design/icons";
 import { Button, Checkbox, Form, Input, Image, Tabs } from "antd";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link, Navigate, useLocation } from "react-router-dom";
 import FullLogoIcon from "/icons/full-logo-icon.svg";
-import { ROUTER_PATHS } from "../../../routes/index";
-import { useLoginMutation } from "@services/auth-service";
-import { useEffect } from "react";
+import { useCheckEmailMutation, useLoginMutation } from "@services/auth-service";
+import { useEffect, useState } from "react";
 import { ROUTER_PATHS as Paths } from "../../../routes/index";
 import { IAuthForm } from "@interfaces/auth.interface";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@redux/configure-store";
+import { push } from "redux-first-history";
+import { authActions } from "@redux/auth.slice";
+
 
 
 export const LoginForm = () => {
-    const [loginPost, { isSuccess, isError }] = useLoginMutation();
-    const navigate = useNavigate();
+    const [login, { isSuccess: isLoginSuccess, isError: isLoginError }] = useLoginMutation();
+    const [checkEmail, { isSuccess: isCheckSuccess, isError: isCheckError, error }] = useCheckEmailMutation();
+    const [emailInput, setEmailInput] = useState<string>('');
+    const { pathname } = useLocation();
+    const dispatch = useDispatch<AppDispatch>();
     const onFinish = async (values: IAuthForm) => {
-        console.log(values);
         if (values.email && values.password)
-            await loginPost({
+            await login({
                 email: values.email,
                 password: values.password
             });
         return;
     };
+    const forgotPasswordHandler = async () => {
+        await checkEmail({ email: emailInput });
+        return
+    };
+
+    const validateEmail = (email: string) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+        return emailRegex.test(email)
+    };
     useEffect(() => {
-        if (isSuccess)
-            navigate(Paths.Main);
-        if (isError) {
-            navigate(Paths.Result.Login.Error);
+        if (isCheckSuccess) {
+            dispatch(authActions.setConfirmEmail(emailInput));
+            dispatch(push(Paths.Auth.ConfirmEmail, {
+                from: pathname
+            }));
         }
-    }, [isSuccess, isError]);
+        if (isCheckError && error) {
+            if ('status' in error) {
+                const errData = 'error' in error ? error.error : JSON.parse(JSON.stringify(error.data));
+                if (error.status === 404 && errData.message === 'Email не найден')
+                    dispatch(push(Paths.Result.PasswordRecovery.CheckEmail.ExistError));
+                else
+                    dispatch(push(Paths.Result.PasswordRecovery.CheckEmail.Error))
+            }
+        }
+        return
+    }, [isCheckError, isCheckSuccess]);
+
+    useEffect(() => {
+        if (isLoginSuccess)
+            dispatch(push(Paths.Main));
+        if (isLoginError)
+            dispatch(push(Paths.Result.Login.Error));
+    }, [isLoginSuccess, isLoginError]);
 
 
     return (<> <Image
@@ -63,11 +96,13 @@ export const LoginForm = () => {
                                 },
                                 {
                                     required: true,
-                                    message: 'P',
+                                    message: '',
                                 },
                             ]}
                         >
-                            <Input size="large" addonBefore='email:' />
+                            <Input size="large" addonBefore='email:'
+                                value={emailInput}
+                                onChange={(e) => setEmailInput(e.target.value)} />
                         </Form.Item>
 
                         <Form.Item
@@ -82,9 +117,14 @@ export const LoginForm = () => {
                                 <Checkbox>Запомнить меня</Checkbox>
                             </Form.Item>
 
-                            <a className="login-form-forgot" href="" style={{ float: 'right' }}>
-                                Забыли пароль?
-                            </a>
+                            <Button
+                                onClick={forgotPasswordHandler}
+                                type="link"
+                                className="login-form-forgot"
+                                style={{ float: 'right', padding: '0px', height: 'auto' }}
+                                disabled={!validateEmail(emailInput)}
+                            >Забыли пароль?</Button>
+
                         </Form.Item>
 
                         <Form.Item>
@@ -104,7 +144,7 @@ export const LoginForm = () => {
                 {
                     label: <Link to={'/auth/registration'}>Регистрация</Link>,
                     key: '2',
-                    children: <Navigate to={ROUTER_PATHS.Auth.Registration} />
+                    children: <Navigate to={Paths.Auth.Registration} />
                 },
             ]}
         /></>);
