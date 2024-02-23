@@ -10,16 +10,17 @@ import { ROUTER_PATHS as Paths } from "@routes/route-paths";
 import { authActions } from "@redux/auth.slice";
 import cn from 'classnames';
 import { useCheckPathname } from "@hooks/use-check-pathname";
+import { IConfirmEmailProps } from "./ConfirmEmail.props";
 
 
 
 
-export const ConfirmEmail: FC = () => {
+export const ConfirmEmail: FC<IConfirmEmailProps> = ({ pathFrom }) => {
     const [confirmEmail, { isSuccess, isError }] = useConfirmEmailMutation();
     const email = useSelector((s: RootState) => s.auth.confirmEmail);
     const [verificationCode, setVerificationCode] = useState<string>('');
     const dispatch = useDispatch<AppDispatch>();
-    useCheckPathname();
+    useCheckPathname(pathFrom);
     useEffect(() => {
         if (isSuccess) {
             dispatch(push(Paths.Auth.ChangePassword));

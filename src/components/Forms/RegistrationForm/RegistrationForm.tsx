@@ -1,36 +1,54 @@
 import { GooglePlusOutlined } from "@ant-design/icons";
 import { Button, Form, Input, Tabs, Image } from "antd";
-import { Link, Navigate } from "react-router-dom";
+import { Link, Navigate, useLocation } from "react-router-dom";
 import FullLogoIcon from "/icons/full-logo-icon.svg";
 import { ROUTER_PATHS as Paths } from "../../../routes/index";
 import { useRegistrationMutation } from "@services/auth-service";
 import { useEffect } from "react";
 import { IAuthForm } from "@interfaces/auth.interface";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@redux/configure-store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@redux/configure-store";
 import { push } from "redux-first-history";
+import { authActions } from "@redux/auth.slice";
 
 
 export const RegistrationForm = () => {
     const [registration, { isSuccess, isError, error }] = useRegistrationMutation();
     const dispatch = useDispatch<AppDispatch>();
+    const { pathname } = useLocation();
+    const history = useSelector((s: RootState) => s.router);
+    const previousRegistrationData = useSelector((s: RootState) => s.auth.registrationData);
     const onFinish = async (values: IAuthForm) => {
-        if (values.email && values.password)
+        if (values.email && values.password) {
             await registration({
                 email: values.email,
                 password: values.password
-            })
+            });
+            dispatch(authActions.setRegistrationData({
+                email: values.email,
+                password: values.password
+            }))
+        }
+
     };
     useEffect(() => {
+        if (history.location?.state instanceof Object &&
+            'from' in history.location.state &&
+            history.location.state.from === Paths.Result.Registration.Error
+            && previousRegistrationData)
+            registration(previousRegistrationData);
+    }, [])
+    useEffect(() => {
         if (isSuccess) {
-            dispatch(push(Paths.Result.Registration.Success));
+            dispatch(push(Paths.Result.Registration.Success, { from: pathname }));
         }
         else if (isError && error) {
             if ('status' in error && error.status === 409)
-                dispatch(push(Paths.Result.Registration.UserExistError));
+                dispatch(push(Paths.Result.Registration.UserExistError, { from: pathname }));
         }
         else if (isError) {
-            dispatch(push(Paths.Result.Registration.Error))
+            console.log('f')
+            dispatch(push(Paths.Result.Registration.Error, { from: pathname }))
         }
     }, [isSuccess, isError])
 

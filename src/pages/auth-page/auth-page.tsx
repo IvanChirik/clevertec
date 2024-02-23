@@ -4,13 +4,14 @@ import auth_background from '/images/auth_background.png';
 import styles from './auth-page.module.scss';
 
 import { Outlet } from "react-router-dom";
+import { RequireNotAuthState } from "../../helpers/RequireNotAuthState";
 
 
 
 
 export const AuthPage: FC = () => {
 
-    return <div style={{ maxWidth: "1440px", margin: "0 auto", position: "relative" }}>
+    return <RequireNotAuthState> <div style={{ maxWidth: "1440px", margin: "0 auto", position: "relative" }}>
         <Layout style={{
             display: 'flex',
             alignItems: 'center',
@@ -35,6 +36,8 @@ export const AuthPage: FC = () => {
                 }}>
                 <Outlet />
             </Card>
-        </Layout></div>
+        </Layout>
+    </div>
+    </RequireNotAuthState>
 };
 

@@ -16,6 +16,9 @@ import { AppDispatch, RootState } from '@redux/configure-store';
 import styles from './MainSidebar.module.scss';
 import useWindowWidth from '@hooks/use-window-width';
 import { appActions } from '@redux/app.slice';
+import { authActions } from '@redux/auth.slice';
+import { ROUTER_PATHS as Paths } from '@routes/route-paths';
+import { push } from 'redux-first-history';
 
 export const MainSidebar = () => {
   const width = useWindowWidth()
@@ -24,7 +27,11 @@ export const MainSidebar = () => {
   const collapsed = useSelector((state: RootState) => state.app.collapsed);
   const dispatch = useDispatch<AppDispatch>();
   const { Sider } = Layout;
-
+  const logoutHandler = () => {
+    localStorage.removeItem('access_token');
+    dispatch(authActions.setAccessToken(''));
+    dispatch(push(Paths.Auth.Login));
+  };
 
   const navItems = [
     {
@@ -136,6 +143,7 @@ export const MainSidebar = () => {
           ))}
         </Menu>
         <Button
+          onClick={logoutHandler}
           style={{
             paddingLeft: "16px",
             display: "flex",
@@ -272,6 +280,7 @@ export const MainSidebar = () => {
               color: "black"
             }}
             type='link'
+            onClick={logoutHandler}
           >
             <span style={{
               display: collapsed ? "none" : "block",

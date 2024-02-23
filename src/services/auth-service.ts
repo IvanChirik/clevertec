@@ -21,7 +21,7 @@ export const authApi = createApi({
                 method: 'POST',
                 body: authData
             }),
-            transformResponse: (response: { data: ILoginResponse }) => response.data,
+            transformResponse: (response: ILoginResponse) => response,
             transformErrorResponse: (response: { status: string | number }) => response
         }),
 

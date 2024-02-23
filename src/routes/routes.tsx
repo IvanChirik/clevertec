@@ -7,16 +7,19 @@ import { AUTH_PATH, ROUTER_PATHS as Paths, RESULT_PATH } from "./route-paths";
 import { AuthResult } from "@components/AuthResult/AuthResult";
 import { ChangePassword } from "@components/Forms/ChangePassword/ChangePassword";
 import { ConfirmEmail } from "@components/Forms/ConfirmEmail/ConfirmEmail";
+import { RequireAuth } from "../helpers/RequireAuth";
 
 
 
 export const routes = (
     <Routes>
-        <Route path={Paths.Main} element={<MainPage />} />
+        <Route path={Paths.Main} element={<RequireAuth>
+            <MainPage />
+        </RequireAuth>} />
         <Route path={AUTH_PATH} element={<AuthPage />} >
             <Route path={Paths.Auth.Login} element={<LoginForm />} />
             <Route path={Paths.Auth.Registration} element={<RegistrationForm />} />
-            <Route path={Paths.Auth.ConfirmEmail} element={<ConfirmEmail />} />
+            <Route path={Paths.Auth.ConfirmEmail} element={<ConfirmEmail pathFrom={Paths.Auth.Login} />} />
             <Route path={Paths.Auth.ChangePassword} element={<ChangePassword />} />
         </Route>
         <Route path={RESULT_PATH} element={<AuthPage />}>
@@ -27,6 +30,7 @@ export const routes = (
                     title='Данные не сохранились'
                     subTitle='Такой e-mail уже записан в системе. Попробуйте зарегестрироваться по другому e-mail.'
                     buttonTitle="Повторить"
+                    pathFrom={Paths.Auth.Registration}
                 />} />
             <Route
                 path={Paths.Result.Registration.Error}
@@ -35,6 +39,7 @@ export const routes = (
                     title='Данные не сохранились'
                     subTitle='Что-то пошло не так и ваша регистрация не завершилась. Попробуйте ещё раз.'
                     buttonTitle="Повторить"
+                    pathFrom={Paths.Auth.Registration}
                 />} />
             <Route
                 path={Paths.Result.Registration.Success}
@@ -43,6 +48,8 @@ export const routes = (
                     title='Регистрация успешна'
                     subTitle='Регистрация прошла успешно. Зайдите в приложение, используя свои e-mail и пароль.'
                     buttonTitle="Войти"
+                    pathFrom={Paths.Auth.Registration}
+                    pathTo={Paths.Auth.Login}
                 />} />
             <Route
                 path={Paths.Result.Login.Error}
@@ -51,6 +58,7 @@ export const routes = (
                     title='Вход не выполнен'
                     subTitle='Что-то пошло не так. Попробуйте ещё раз.'
                     buttonTitle="Повторить"
+                    pathFrom={Paths.Auth.Login}
                 />} />
             <Route
                 path={Paths.Result.PasswordRecovery.CheckEmail.ExistError}
@@ -59,6 +67,7 @@ export const routes = (
                     title='Такой e-mail не зарегестрирован'
                     subTitle='Мы не нашли в базе вашего e-mail. Попробуйте войти с другим e-mail.'
                     buttonTitle="Попробовать снова"
+                    pathFrom={Paths.Auth.ConfirmEmail}
                 />} />
             <Route
                 path={Paths.Result.PasswordRecovery.CheckEmail.Error}
@@ -67,6 +76,7 @@ export const routes = (
                     title='Что-то пошло не так.'
                     subTitle='Произошла ошибка, попробуйте отправить форму ещё раз.'
                     buttonTitle="Назад"
+                    pathFrom={Paths.Auth.ConfirmEmail}
                 />} />
             <Route
                 path={Paths.Result.PasswordRecovery.CheckPassword.Success}
@@ -75,6 +85,7 @@ export const routes = (
                     title='Пароль успешно изменён.'
                     subTitle='Теперь можно войти в аккаунт используя свой логин и новый пароль.'
                     buttonTitle="Вход"
+                    pathFrom={Paths.Auth.ChangePassword}
                 />} />
             <Route
                 path={Paths.Result.PasswordRecovery.CheckPassword.Error}
@@ -83,6 +94,7 @@ export const routes = (
                     title='Данные не сохранились.'
                     subTitle='Что-то пошло не так. Попробуйте ещё раз.'
                     buttonTitle="Повторить"
+                    pathFrom={Paths.Auth.ChangePassword}
                 />} />
         </Route>
     </Routes>

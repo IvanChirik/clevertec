@@ -1,7 +1,12 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 interface IInitialAuthState {
+    registrationData?: {
+        email: string,
+        password: string
+    };
     confirmEmail: string;
+    accessToken?: string
 }
 
 
@@ -15,6 +20,12 @@ export const authSlice = createSlice({
     reducers: {
         setConfirmEmail: (state, action: PayloadAction<string>) => {
             state.confirmEmail = action.payload;
+        },
+        setAccessToken: (state, action: PayloadAction<string>) => {
+            state.accessToken = action.payload;
+        },
+        setRegistrationData: (state, action: PayloadAction<{ email: string, password: string }>) => {
+            state.registrationData = action.payload;
         },
     },
 });

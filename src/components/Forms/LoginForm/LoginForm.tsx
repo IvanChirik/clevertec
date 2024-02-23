@@ -10,14 +10,16 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "@redux/configure-store";
 import { push } from "redux-first-history";
 import { authActions } from "@redux/auth.slice";
+import { useForm } from "antd/lib/form/Form";
 
 
 
 export const LoginForm = () => {
-    const [login, { isSuccess: isLoginSuccess, isError: isLoginError }] = useLoginMutation();
+    const [login, { isSuccess: isLoginSuccess, isError: isLoginError, data }] = useLoginMutation();
     const [checkEmail, { isSuccess: isCheckSuccess, isError: isCheckError, error }] = useCheckEmailMutation();
     const [emailInput, setEmailInput] = useState<string>('');
     const { pathname } = useLocation();
+    const [form] = useForm();
     const dispatch = useDispatch<AppDispatch>();
     const onFinish = async (values: IAuthForm) => {
         if (values.email && values.password)
@@ -47,19 +49,26 @@ export const LoginForm = () => {
             if ('status' in error) {
                 const errData = 'error' in error ? error.error : JSON.parse(JSON.stringify(error.data));
                 if (error.status === 404 && errData.message === 'Email не найден')
-                    dispatch(push(Paths.Result.PasswordRecovery.CheckEmail.ExistError));
+                    dispatch(push(Paths.Result.PasswordRecovery.CheckEmail.ExistError, { from: pathname }));
                 else
-                    dispatch(push(Paths.Result.PasswordRecovery.CheckEmail.Error))
+                    dispatch(push(Paths.Result.PasswordRecovery.CheckEmail.Error, { from: pathname }))
             }
         }
         return
     }, [isCheckError, isCheckSuccess]);
 
     useEffect(() => {
-        if (isLoginSuccess)
-            dispatch(push(Paths.Main));
+        if (isLoginSuccess && data) {
+            if (form.getFieldValue('remember')) {
+                localStorage.setItem('access_token', data.accessToken);
+            }
+            else {
+                dispatch(authActions.setAccessToken(data.accessToken))
+            }
+            dispatch(push(Paths.Main, { from: pathname }));
+        }
         if (isLoginError)
-            dispatch(push(Paths.Result.Login.Error));
+            dispatch(push(Paths.Result.Login.Error, { from: pathname }));
     }, [isLoginSuccess, isLoginError]);
 
 
@@ -81,6 +90,7 @@ export const LoginForm = () => {
                     label: <Link to={'/auth/login'}>Вход</Link>,
                     key: '1',
                     children: <Form
+                        form={form}
                         name="login"
                         initialValues={{ remember: true }}
                         onFinish={onFinish}
@@ -113,7 +123,7 @@ export const LoginForm = () => {
                         </Form.Item>
 
                         <Form.Item>
-                            <Form.Item name="remember" valuePropName="checked" noStyle>
+                            <Form.Item name="remember" valuePropName="checked" noStyle >
                                 <Checkbox>Запомнить меня</Checkbox>
                             </Form.Item>
 
