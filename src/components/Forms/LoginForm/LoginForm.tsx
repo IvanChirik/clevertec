@@ -6,18 +6,21 @@ import { useCheckEmailMutation, useLoginMutation } from "@services/auth-service"
 import { useEffect, useState } from "react";
 import { ROUTER_PATHS as Paths } from "../../../routes/index";
 import { IAuthForm } from "@interfaces/auth.interface";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@redux/configure-store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@redux/configure-store";
 import { push } from "redux-first-history";
 import { authActions } from "@redux/auth.slice";
 import { useForm } from "antd/lib/form/Form";
+import { appActions } from "@redux/app.slice";
 
 
 
 export const LoginForm = () => {
-    const [login, { isSuccess: isLoginSuccess, isError: isLoginError, data }] = useLoginMutation();
-    const [checkEmail, { isSuccess: isCheckSuccess, isError: isCheckError, error }] = useCheckEmailMutation();
+    const [login, { isLoading: isLoginLoading, isSuccess: isLoginSuccess, isError: isLoginError, data }] = useLoginMutation();
+    const [checkEmail, { isLoading: isCheckLoading, isSuccess: isCheckSuccess, isError: isCheckError, error }] = useCheckEmailMutation();
     const [emailInput, setEmailInput] = useState<string>('');
+    const confirmEmail = useSelector((s: RootState) => s.auth.confirmEmail);
+    const history = useSelector((s: RootState) => s.router);
     const { pathname } = useLocation();
     const [form] = useForm();
     const dispatch = useDispatch<AppDispatch>();
@@ -30,6 +33,7 @@ export const LoginForm = () => {
         return;
     };
     const forgotPasswordHandler = async () => {
+        dispatch(authActions.setConfirmEmail(emailInput));
         await checkEmail({ email: emailInput });
         return
     };
@@ -39,8 +43,18 @@ export const LoginForm = () => {
         return emailRegex.test(email)
     };
     useEffect(() => {
+        dispatch(appActions.setIsLoading(isLoginLoading || isCheckLoading));
+    }, [isLoginLoading, isCheckLoading]);
+    useEffect(() => {
+        if (history.location?.state instanceof Object &&
+            'from' in history.location.state &&
+            history.location.state.from === Paths.Result.PasswordRecovery.CheckEmail.Error
+            && confirmEmail)
+            checkEmail({ email: confirmEmail });
+    }, []);
+
+    useEffect(() => {
         if (isCheckSuccess) {
-            dispatch(authActions.setConfirmEmail(emailInput));
             dispatch(push(Paths.Auth.ConfirmEmail, {
                 from: pathname
             }));
@@ -51,7 +65,8 @@ export const LoginForm = () => {
                 if (error.status === 404 && errData.message === 'Email не найден')
                     dispatch(push(Paths.Result.PasswordRecovery.CheckEmail.ExistError, { from: pathname }));
                 else
-                    dispatch(push(Paths.Result.PasswordRecovery.CheckEmail.Error, { from: pathname }))
+                    dispatch(push(Paths.Result.PasswordRecovery.CheckEmail.Error, { from: pathname }));
+
             }
         }
         return
@@ -72,16 +87,17 @@ export const LoginForm = () => {
     }, [isLoginSuccess, isLoginError]);
 
 
-    return (<> <Image
-        style={{
-            margin: "16px 9px",
-            justifySelf: 'center'
-        }}
-        width={309}
-        preview={false}
-        src={FullLogoIcon}
-        alt="Logo"
-    />
+    return (<>
+        <Image
+            style={{
+                margin: "16px 9px",
+                justifySelf: 'center'
+            }}
+            width={309}
+            preview={false}
+            src={FullLogoIcon}
+            alt="Logo"
+        />
         <Tabs
             defaultActiveKey="1"
             tabBarGutter={0}
@@ -110,7 +126,10 @@ export const LoginForm = () => {
                                 },
                             ]}
                         >
-                            <Input size="large" addonBefore='email:'
+                            <Input
+                                size="large"
+                                data-test-id='login-email'
+                                addonBefore='e-mail:'
                                 value={emailInput}
                                 onChange={(e) => setEmailInput(e.target.value)} />
                         </Form.Item>
@@ -119,17 +138,21 @@ export const LoginForm = () => {
                             name="password"
                             rules={[{ required: true, message: '' }]}
                         >
-                            <Input.Password size="large" placeholder="Пароль" />
+                            <Input.Password
+                                data-test-id='login-password'
+                                size="large"
+                                placeholder="Пароль" />
                         </Form.Item>
 
                         <Form.Item>
                             <Form.Item name="remember" valuePropName="checked" noStyle >
-                                <Checkbox>Запомнить меня</Checkbox>
+                                <Checkbox data-test-id='login-remember'>Запомнить меня</Checkbox>
                             </Form.Item>
 
                             <Button
                                 onClick={forgotPasswordHandler}
                                 type="link"
+                                data-test-id='login-forgot-button'
                                 className="login-form-forgot"
                                 style={{ float: 'right', padding: '0px', height: 'auto' }}
                                 disabled={!validateEmail(emailInput)}
@@ -138,7 +161,12 @@ export const LoginForm = () => {
                         </Form.Item>
 
                         <Form.Item>
-                            <Button size="large" type="primary" htmlType="submit" style={{ width: '100%' }}>
+                            <Button
+                                data-test-id='login-submit-button'
+                                size="large"
+                                type="primary"
+                                htmlType="submit"
+                                style={{ width: '100%' }}>
                                 Войти
                             </Button>
                         </Form.Item>

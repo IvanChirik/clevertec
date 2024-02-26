@@ -11,19 +11,25 @@ import { authActions } from "@redux/auth.slice";
 import cn from 'classnames';
 import { useCheckPathname } from "@hooks/use-check-pathname";
 import { IConfirmEmailProps } from "./ConfirmEmail.props";
+import { useLocation } from "react-router-dom";
+import { appActions } from "@redux/app.slice";
 
 
 
 
 export const ConfirmEmail: FC<IConfirmEmailProps> = ({ pathFrom }) => {
-    const [confirmEmail, { isSuccess, isError }] = useConfirmEmailMutation();
+    const [confirmEmail, { isLoading, isSuccess, isError }] = useConfirmEmailMutation();
     const email = useSelector((s: RootState) => s.auth.confirmEmail);
+    const { pathname } = useLocation();
     const [verificationCode, setVerificationCode] = useState<string>('');
     const dispatch = useDispatch<AppDispatch>();
     useCheckPathname(pathFrom);
     useEffect(() => {
+        dispatch(appActions.setIsLoading(isLoading));
+    }, [isLoading]);
+    useEffect(() => {
         if (isSuccess) {
-            dispatch(push(Paths.Auth.ChangePassword));
+            dispatch(push(Paths.Auth.ChangePassword, { from: pathname }));
             dispatch(authActions.setConfirmEmail(''))
         }
     }, [isSuccess])
@@ -47,6 +53,7 @@ export const ConfirmEmail: FC<IConfirmEmailProps> = ({ pathFrom }) => {
         extra={[
             <div className={styles['input-wrapper']}>
                 <VerificationInput
+                    data-test-id='verification-input'
                     value={verificationCode}
                     onChange={(e) => setVerificationCode(e)}
                     classNames={{

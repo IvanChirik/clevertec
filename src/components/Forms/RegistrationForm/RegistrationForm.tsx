@@ -10,10 +10,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@redux/configure-store";
 import { push } from "redux-first-history";
 import { authActions } from "@redux/auth.slice";
+import { appActions } from "@redux/app.slice";
+
 
 
 export const RegistrationForm = () => {
-    const [registration, { isSuccess, isError, error }] = useRegistrationMutation();
+    const [registration, { isLoading, isSuccess, isError, error }] = useRegistrationMutation();
     const dispatch = useDispatch<AppDispatch>();
     const { pathname } = useLocation();
     const history = useSelector((s: RootState) => s.router);
@@ -32,20 +34,22 @@ export const RegistrationForm = () => {
 
     };
     useEffect(() => {
+        dispatch(appActions.setIsLoading(isLoading));
+    }, [isLoading])
+    useEffect(() => {
         if (history.location?.state instanceof Object &&
             'from' in history.location.state &&
             history.location.state.from === Paths.Result.Registration.Error
             && previousRegistrationData)
             registration(previousRegistrationData);
-    }, [])
+    }, []);
     useEffect(() => {
         if (isSuccess) {
             dispatch(push(Paths.Result.Registration.Success, { from: pathname }));
+            dispatch(authActions.setRegistrationData({ email: '', password: '' }));
         }
-        else if (isError && error) {
-            if ('status' in error && error.status === 409)
-                dispatch(push(Paths.Result.Registration.UserExistError, { from: pathname }));
-        }
+        else if (isError && error && 'status' in error && error.status === 409)
+            dispatch(push(Paths.Result.Registration.UserExistError, { from: pathname }));
         else if (isError) {
             console.log('f')
             dispatch(push(Paths.Result.Registration.Error, { from: pathname }))
@@ -91,7 +95,10 @@ export const RegistrationForm = () => {
                                     },
                                 ]}
                             >
-                                <Input size="large" addonBefore='email:' />
+                                <Input
+                                    data-test-id='registration-email'
+                                    size="large"
+                                    addonBefore='email:' />
                             </Form.Item>
 
                             <Form.Item
@@ -102,13 +109,16 @@ export const RegistrationForm = () => {
                                         message: ''
                                     },
                                     {
-                                        pattern: /^(?=.*[A-Z])(?=.*\d).{8,}$/,
+                                        pattern: /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{8,}$/,
                                         message: ''
                                     },
                                 ]}
                                 extra="Пароль не менее 8 символов, с заглавной буквой и цифрой"
                             >
-                                <Input.Password size="large" placeholder="Пароль" />
+                                <Input.Password
+                                    data-test-id='registration-password'
+                                    size="large"
+                                    placeholder="Пароль" />
                             </Form.Item>
                             <Form.Item
                                 name="confirm"
@@ -129,12 +139,20 @@ export const RegistrationForm = () => {
 
                                 ]}
                             >
-                                <Input.Password size="large" placeholder="Повторите пароль" />
+                                <Input.Password
+                                    data-test-id='registration-confirm-password'
+                                    size="large"
+                                    placeholder="Повторите пароль" />
                             </Form.Item>
 
 
                             <Form.Item>
-                                <Button size="large" type="primary" htmlType="submit" style={{ width: '100%' }}>
+                                <Button
+                                    data-test-id='registration-submit-button'
+                                    size="large"
+                                    type="primary"
+                                    htmlType="submit"
+                                    style={{ width: '100%' }}>
                                     Войти
                                 </Button>
                             </Form.Item>

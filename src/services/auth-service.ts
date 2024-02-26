@@ -11,6 +11,12 @@ export const authApi = createApi({
     reducerPath: 'authApi',
     baseQuery: fetchBaseQuery({
         baseUrl: API_URL,
+        prepareHeaders: headers => {
+            headers.set('Content-Type', 'application/json');
+            headers.set('Accept', 'application/json');
+            headers.set('Set-Cookie', 'myCookie=myValue; SameSite=None; Secure');
+            return headers;
+        },
         credentials: 'include',
         mode: 'cors'
     }),

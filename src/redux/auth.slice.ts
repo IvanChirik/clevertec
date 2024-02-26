@@ -5,6 +5,7 @@ interface IInitialAuthState {
         email: string,
         password: string
     };
+    changePasswordData?: string;
     confirmEmail: string;
     accessToken?: string
 }
@@ -26,6 +27,9 @@ export const authSlice = createSlice({
         },
         setRegistrationData: (state, action: PayloadAction<{ email: string, password: string }>) => {
             state.registrationData = action.payload;
+        },
+        setChangePasswordData: (state, action: PayloadAction<string>) => {
+            state.changePasswordData = action.payload;
         },
     },
 });

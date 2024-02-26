@@ -3,10 +3,12 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 interface IInitialAppState {
     collapsed: boolean;
+    isLoading: boolean;
 }
 
 const initialAppState: IInitialAppState = {
     collapsed: false,
+    isLoading: false
 };
 
 export const appSlice = createSlice({
@@ -15,6 +17,9 @@ export const appSlice = createSlice({
     reducers: {
         setCollapsed: (state, action: PayloadAction<boolean>) => {
             state.collapsed = action.payload;
+        },
+        setIsLoading: (state, action: PayloadAction<boolean>) => {
+            state.isLoading = action.payload;
         }
     },
 });

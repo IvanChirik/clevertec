@@ -7,13 +7,13 @@ import { push } from "redux-first-history";
 
 
 
-export const useCheckPathname = (from: string) => {
+export const useCheckPathname = (from: string, secondAllowPath?: string) => {
     const dispatch = useDispatch<AppDispatch>();
     const history = useSelector((s: RootState) => s.router);
     useEffect(() => {
         if (history.location?.state instanceof Object
             && 'from' in history.location.state
-            && history.location.state.from === from)
+            && history.location.state.from === from || secondAllowPath)
             return
         dispatch(push(Paths.Auth.Login));
     }, []);
