@@ -27,14 +27,14 @@ export const ChangePassword: FC<IChangePassword> = ({ pathFrom }) => {
     useCheckPathname(pathFrom, Paths.Result.PasswordRecovery.CheckPassword.Error);
     useEffect(() => {
         dispatch(appActions.setIsLoading(isLoading));
-    }, [isLoading]);
+    }, [isLoading, dispatch]);
     useEffect(() => {
         if (history.location?.state instanceof Object &&
             'from' in history.location.state &&
             (history.location.state.from === Paths.Auth.ChangePassword || Paths.Result.PasswordRecovery.CheckPassword.Error)
             && previousPassword)
             changePassword({ password: previousPassword, confirmPassword: previousPassword });
-    }, []);
+    }, [changePassword, previousPassword, history.location?.state]);
     useEffect(() => {
         if (isSuccess) {
             dispatch(push(Paths.Result.PasswordRecovery.CheckPassword.Success, { from: pathname }));
@@ -48,7 +48,7 @@ export const ChangePassword: FC<IChangePassword> = ({ pathFrom }) => {
             }
             dispatch(push(Paths.Result.PasswordRecovery.CheckPassword.Error, { from: pathname }));
         }
-    }, [isSuccess, isError])
+    }, [isSuccess, isError, dispatch, error, pathname])
 
 
     return <Form

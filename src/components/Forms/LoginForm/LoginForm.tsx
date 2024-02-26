@@ -44,14 +44,14 @@ export const LoginForm = () => {
     };
     useEffect(() => {
         dispatch(appActions.setIsLoading(isLoginLoading || isCheckLoading));
-    }, [isLoginLoading, isCheckLoading]);
+    }, [isLoginLoading, isCheckLoading, dispatch]);
     useEffect(() => {
         if (history.location?.state instanceof Object &&
             'from' in history.location.state &&
             history.location.state.from === Paths.Result.PasswordRecovery.CheckEmail.Error
             && confirmEmail)
             checkEmail({ email: confirmEmail });
-    }, []);
+    }, [checkEmail, confirmEmail, history.location?.state]);
 
     useEffect(() => {
         if (isCheckSuccess) {
@@ -70,7 +70,7 @@ export const LoginForm = () => {
             }
         }
         return
-    }, [isCheckError, isCheckSuccess]);
+    }, [isCheckError, isCheckSuccess, dispatch, pathname, error]);
 
     useEffect(() => {
         if (isLoginSuccess && data) {
@@ -84,7 +84,7 @@ export const LoginForm = () => {
         }
         if (isLoginError)
             dispatch(push(Paths.Result.Login.Error, { from: pathname }));
-    }, [isLoginSuccess, isLoginError]);
+    }, [isLoginSuccess, isLoginError, dispatch, data, form, pathname]);
 
 
     return (<>
@@ -111,7 +111,7 @@ export const LoginForm = () => {
                         initialValues={{ remember: true }}
                         onFinish={onFinish}
                         autoComplete="off"
-                        style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}
+                        style={{ display: 'flex', flexDirection: 'column', minWidth: '368px' }}
                     >
                         <Form.Item
                             name="email"
@@ -144,12 +144,13 @@ export const LoginForm = () => {
                                 placeholder="Пароль" />
                         </Form.Item>
 
-                        <Form.Item>
+                        <Form.Item style={{ paddingTop: '54px' }}>
                             <Form.Item name="remember" valuePropName="checked" noStyle >
                                 <Checkbox data-test-id='login-remember'>Запомнить меня</Checkbox>
                             </Form.Item>
 
                             <Button
+
                                 onClick={forgotPasswordHandler}
                                 type="link"
                                 data-test-id='login-forgot-button'

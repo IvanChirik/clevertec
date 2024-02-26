@@ -11,6 +11,7 @@ import { AppDispatch, RootState } from "@redux/configure-store";
 import { push } from "redux-first-history";
 import { authActions } from "@redux/auth.slice";
 import { appActions } from "@redux/app.slice";
+import { useForm } from "antd/lib/form/Form";
 
 
 
@@ -18,6 +19,7 @@ export const RegistrationForm = () => {
     const [registration, { isLoading, isSuccess, isError, error }] = useRegistrationMutation();
     const dispatch = useDispatch<AppDispatch>();
     const { pathname } = useLocation();
+    const [form] = useForm();
     const history = useSelector((s: RootState) => s.router);
     const previousRegistrationData = useSelector((s: RootState) => s.auth.registrationData);
     const onFinish = async (values: IAuthForm) => {
@@ -35,14 +37,14 @@ export const RegistrationForm = () => {
     };
     useEffect(() => {
         dispatch(appActions.setIsLoading(isLoading));
-    }, [isLoading])
+    }, [isLoading, dispatch])
     useEffect(() => {
         if (history.location?.state instanceof Object &&
             'from' in history.location.state &&
             history.location.state.from === Paths.Result.Registration.Error
             && previousRegistrationData)
             registration(previousRegistrationData);
-    }, []);
+    }, [registration, previousRegistrationData, history.location?.state]);
     useEffect(() => {
         if (isSuccess) {
             dispatch(push(Paths.Result.Registration.Success, { from: pathname }));
@@ -51,10 +53,9 @@ export const RegistrationForm = () => {
         else if (isError && error && 'status' in error && error.status === 409)
             dispatch(push(Paths.Result.Registration.UserExistError, { from: pathname }));
         else if (isError) {
-            console.log('f')
             dispatch(push(Paths.Result.Registration.Error, { from: pathname }))
         }
-    }, [isSuccess, isError])
+    }, [isSuccess, isError, dispatch, error, pathname])
 
     return (
         <>
@@ -81,6 +82,8 @@ export const RegistrationForm = () => {
                             name="registration"
                             initialValues={{ remember: true }}
                             onFinish={onFinish}
+                            style={{ minWidth: '368px' }}
+                            form={form}
                         >
                             <Form.Item
                                 name="email"
@@ -98,11 +101,12 @@ export const RegistrationForm = () => {
                                 <Input
                                     data-test-id='registration-email'
                                     size="large"
-                                    addonBefore='email:' />
+                                    addonBefore='e-mail:' />
                             </Form.Item>
 
                             <Form.Item
                                 name="password"
+                                style={{ fontSize: '12px' }}
                                 rules={[
                                     {
                                         required: true,
@@ -110,10 +114,10 @@ export const RegistrationForm = () => {
                                     },
                                     {
                                         pattern: /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{8,}$/,
-                                        message: ''
+                                        message: (<span style={{ fontSize: '12px' }}>Пароль не менее 8 символов, с заглавной буквой и цифрой</span>)
                                     },
                                 ]}
-                                extra="Пароль не менее 8 символов, с заглавной буквой и цифрой"
+                                extra={form.getFieldValue('password') ? undefined : <span style={{ fontSize: '12px' }}>Пароль не менее 8 символов, с заглавной буквой и цифрой</span>}
                             >
                                 <Input.Password
                                     data-test-id='registration-password'
@@ -146,7 +150,7 @@ export const RegistrationForm = () => {
                             </Form.Item>
 
 
-                            <Form.Item>
+                            <Form.Item style={{ paddingTop: '32px' }}>
                                 <Button
                                     data-test-id='registration-submit-button'
                                     size="large"

@@ -41,7 +41,8 @@ export const AuthPage: FC = () => {
                         gap: '48px',
                         padding: '64px 32px',
                         width: '539px',
-                    }}>
+                    }}
+                >
                     <Outlet />
                 </Card>
             </Layout>

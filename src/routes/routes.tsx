@@ -26,7 +26,7 @@ export const routes = (
             <Route
                 path={Paths.Result.Registration.UserExistError}
                 element={<AuthResult
-                    data-test-id='registration-back-button'
+                    dataTest='registration-back-button'
                     status='error'
                     title='Данные не сохранились'
                     subTitle='Такой e-mail уже записан в системе. Попробуйте зарегестрироваться по другому e-mail.'
@@ -36,7 +36,7 @@ export const routes = (
             <Route
                 path={Paths.Result.Registration.Error}
                 element={<AuthResult
-                    data-test-id='registration-retry-button'
+                    dataTest='registration-retry-button'
                     status='error'
                     title='Данные не сохранились'
                     subTitle='Что-то пошло не так и ваша регистрация не завершилась. Попробуйте ещё раз.'
@@ -46,7 +46,7 @@ export const routes = (
             <Route
                 path={Paths.Result.Registration.Success}
                 element={<AuthResult
-                    data-test-id='registration-enter-button'
+                    dataTest='registration-enter-button'
                     status='success'
                     title='Регистрация успешна'
                     subTitle='Регистрация прошла успешно. Зайдите в приложение, используя свои e-mail и пароль.'
@@ -57,7 +57,7 @@ export const routes = (
             <Route
                 path={Paths.Result.Login.Error}
                 element={<AuthResult
-                    data-test-id='login-retry-button'
+                    dataTest='login-retry-button'
                     status='warning'
                     title='Вход не выполнен'
                     subTitle='Что-то пошло не так. Попробуйте ещё раз.'
@@ -67,7 +67,7 @@ export const routes = (
             <Route
                 path={Paths.Result.PasswordRecovery.CheckEmail.ExistError}
                 element={<AuthResult
-                    data-test-id='check-retry-button'
+                    dataTest='check-retry-button'
                     status='error'
                     title='Такой e-mail не зарегестрирован'
                     subTitle='Мы не нашли в базе вашего e-mail. Попробуйте войти с другим e-mail.'
@@ -77,7 +77,7 @@ export const routes = (
             <Route
                 path={Paths.Result.PasswordRecovery.CheckEmail.Error}
                 element={<AuthResult
-                    data-test-id='check-back-button'
+                    dataTest='check-back-button'
                     status='500'
                     title='Что-то пошло не так.'
                     subTitle='Произошла ошибка, попробуйте отправить форму ещё раз.'
@@ -87,7 +87,7 @@ export const routes = (
             <Route
                 path={Paths.Result.PasswordRecovery.CheckPassword.Success}
                 element={<AuthResult
-                    data-test-id='change-entry-button'
+                    dataTest='change-entry-button'
                     status='success'
                     title='Пароль успешно изменён.'
                     subTitle='Теперь можно войти в аккаунт используя свой логин и новый пароль.'
@@ -98,7 +98,7 @@ export const routes = (
             <Route
                 path={Paths.Result.PasswordRecovery.CheckPassword.Error}
                 element={<AuthResult
-                    data-test-id='change-retry-button'
+                    dataTest='change-retry-button'
                     status='error'
                     title='Данные не сохранились.'
                     subTitle='Что-то пошло не так. Попробуйте ещё раз.'

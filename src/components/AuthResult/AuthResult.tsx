@@ -16,7 +16,8 @@ export const AuthResult: FC<IAuthResultProps> = (props) => {
         title,
         subTitle,
         pathFrom,
-        pathTo
+        pathTo,
+        dataTest
     } = props;
     const { pathname } = useLocation();
     const dispatch = useDispatch<AppDispatch>();
@@ -30,6 +31,7 @@ export const AuthResult: FC<IAuthResultProps> = (props) => {
         subTitle={subTitle}
         extra={[
             <Button
+                data-test-id={dataTest}
                 onClick={() => dispatch(push(pathTo || pathFrom, { from: pathname }))}
                 style={{ width: "100%" }}
                 size="large" type="primary" key="console">
