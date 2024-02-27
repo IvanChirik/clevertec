@@ -1,26 +1,29 @@
 import { LoginForm } from "@components/Forms/LoginForm/LoginForm";
 import { RegistrationForm } from "@components/Forms/RegistrationForm/RegistrationForm";
 import { AuthPage } from "@pages/auth-page";
-import { MainPage } from "@pages/main-page";
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import { AUTH_PATH, ROUTER_PATHS as Paths, RESULT_PATH } from "./route-paths";
 import { AuthResult } from "@components/AuthResult/AuthResult";
 import { ChangePassword } from "@components/Forms/ChangePassword/ChangePassword";
 import { ConfirmEmail } from "@components/Forms/ConfirmEmail/ConfirmEmail";
 import { RequireAuth } from "../helpers/RequireAuth";
-
+import { MainPage } from "@pages/main-page";
+import { Suspense } from "react";
+import { Loader } from "@components/UI/Loader/Loader";
 
 
 export const routes = (
     <Routes>
         <Route path={Paths.Main} element={<RequireAuth>
-            <MainPage />
+            <Suspense fallback={<Loader />}><MainPage /></Suspense>
         </RequireAuth>} />
         <Route path={AUTH_PATH} element={<AuthPage />} >
+            <Route index element={<Navigate to={Paths.Auth.Login}></Navigate>} />
             <Route path={Paths.Auth.Login} element={<LoginForm />} />
             <Route path={Paths.Auth.Registration} element={<RegistrationForm />} />
             <Route path={Paths.Auth.ConfirmEmail} element={<ConfirmEmail pathFrom={Paths.Auth.Login} />} />
             <Route path={Paths.Auth.ChangePassword} element={<ChangePassword pathFrom={Paths.Auth.ConfirmEmail} />} />
+            <Route path="*" element={<Navigate to="/main" replace />} />
         </Route>
         <Route path={RESULT_PATH} element={<AuthPage />}>
             <Route
@@ -106,5 +109,6 @@ export const routes = (
                     pathFrom={Paths.Auth.ChangePassword}
                 />} />
         </Route>
+        <Route path="*" element={<Navigate to={Paths.Main} replace />} />
     </Routes>
 )

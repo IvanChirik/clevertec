@@ -1,10 +1,10 @@
 import { GooglePlusOutlined } from "@ant-design/icons";
-import { Button, Form, Input, Tabs, Image } from "antd";
+import { Button, Form, Input, Tabs, Image, Grid } from "antd";
 import { Link, Navigate, useLocation } from "react-router-dom";
 import FullLogoIcon from "/icons/full-logo-icon.svg";
 import { ROUTER_PATHS as Paths } from "../../../routes/index";
 import { useRegistrationMutation } from "@services/auth-service";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { IAuthForm } from "@interfaces/auth.interface";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@redux/configure-store";
@@ -15,13 +15,21 @@ import { useForm } from "antd/lib/form/Form";
 
 
 
+
 export const RegistrationForm = () => {
+    const { useBreakpoint } = Grid;
+    const screens = useBreakpoint();
     const [registration, { isLoading, isSuccess, isError, error }] = useRegistrationMutation();
     const dispatch = useDispatch<AppDispatch>();
     const { pathname } = useLocation();
     const [form] = useForm();
+    const [passwordInput, setPasswordInput] = useState<string>('');
     const history = useSelector((s: RootState) => s.router);
     const previousRegistrationData = useSelector((s: RootState) => s.auth.registrationData);
+    const passwordValidator = (password: string) => {
+        const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{8,}$/;
+        return passwordRegex.test(password)
+    }
     const onFinish = async (values: IAuthForm) => {
         if (values.email && values.password) {
             await registration({
@@ -61,7 +69,7 @@ export const RegistrationForm = () => {
         <>
             <Image
                 style={{ margin: "16px 9px" }}
-                width={309}
+                width={(screens?.xs) ? 203 : 309}
                 preview={false}
                 src={FullLogoIcon}
                 alt="Logo"
@@ -79,11 +87,11 @@ export const RegistrationForm = () => {
                         label: <Link to={'/auth/registration'}>Регистрация</Link>,
                         key: '2',
                         children: <Form
+                            form={form}
                             name="registration"
                             initialValues={{ remember: true }}
                             onFinish={onFinish}
-                            style={{ minWidth: '368px' }}
-                            form={form}
+                            style={{ minWidth: (screens?.xs) ? "auto" : '368px' }}
                         >
                             <Form.Item
                                 name="email"
@@ -110,17 +118,21 @@ export const RegistrationForm = () => {
                                 rules={[
                                     {
                                         required: true,
-                                        message: ''
+                                        message: (<span style={{ fontSize: '12px' }}>Пароль не менее 8 символов, с заглавной буквой и цифрой</span>)
                                     },
                                     {
                                         pattern: /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{8,}$/,
                                         message: (<span style={{ fontSize: '12px' }}>Пароль не менее 8 символов, с заглавной буквой и цифрой</span>)
                                     },
                                 ]}
-                                extra={form.getFieldValue('password') ? undefined : <span style={{ fontSize: '12px' }}>Пароль не менее 8 символов, с заглавной буквой и цифрой</span>}
+                                extra={passwordValidator(passwordInput) ?
+                                    <span style={{ fontSize: '12px' }}>Пароль не менее 8 символов, с заглавной буквой и цифрой</span> :
+                                    ' '}
                             >
                                 <Input.Password
                                     data-test-id='registration-password'
+                                    onChange={(e) => setPasswordInput(e.target.value)}
+                                    value={passwordInput}
                                     size="large"
                                     placeholder="Пароль" />
                             </Form.Item>

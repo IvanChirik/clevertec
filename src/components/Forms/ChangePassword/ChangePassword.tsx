@@ -3,7 +3,7 @@ import { ROUTER_PATHS as Paths } from "@routes/route-paths";
 import { useChangePasswordMutation } from "@services/auth-service";
 import { Button, Form, Input } from "antd";
 import Title from "antd/lib/typography/Title";
-import { FC, useEffect } from "react";
+import { FC, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { push } from "redux-first-history";
 import { IChangePassword } from "./ChangePassword.props";
@@ -11,15 +11,22 @@ import { useLocation } from "react-router-dom";
 import { authActions } from "@redux/auth.slice";
 import { useCheckPathname } from "@hooks/use-check-pathname";
 import { appActions } from "@redux/app.slice";
+import { useForm } from "antd/lib/form/Form";
 
 
 
 export const ChangePassword: FC<IChangePassword> = ({ pathFrom }) => {
     const [changePassword, { isLoading, isSuccess, isError, error }] = useChangePasswordMutation();
     const dispatch = useDispatch<AppDispatch>();
+    const [form] = useForm();
+    const [passwordInput, setPasswordInput] = useState<string>('');
     const previousPassword = useSelector((s: RootState) => s.auth.changePasswordData);
     const history = useSelector((s: RootState) => s.router);
     const { pathname } = useLocation();
+    const passwordValidator = (password: string) => {
+        const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{8,}$/;
+        return passwordRegex.test(password)
+    }
     const setNewPassword = async (values: { password: string }) => {
         dispatch(authActions.setChangePasswordData(values.password));
         await changePassword({ password: values.password, confirmPassword: values.password });
@@ -52,25 +59,33 @@ export const ChangePassword: FC<IChangePassword> = ({ pathFrom }) => {
 
 
     return <Form
+        form={form}
         name="confirm-password"
         initialValues={{ remember: true }}
         autoComplete="off"
         onFinish={setNewPassword}
         style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}
     >
-        <Title style={{ textAlign: 'center' }} level={2} >Восстановление пароля</Title>
+        <Title style={{ textAlign: 'center' }} level={2} >Восстановление аккаунта</Title>
         <Form.Item
             name="password"
             rules={[
-                { required: true, message: '' },
+                {
+                    required: true,
+                    message: (<span style={{ fontSize: '12px' }}>Пароль не менее 8 символов, с заглавной буквой и цифрой</span>)
+                },
                 {
                     pattern: /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{8,}$/,
-                    message: ''
+                    message: (<span style={{ fontSize: '12px' }}>Пароль не менее 8 символов, с заглавной буквой и цифрой</span>)
                 },
             ]}
-            extra="Пароль не менее 8 символов, с заглавной буквой и цифрой"
+            extra={passwordValidator(passwordInput) || !form.isFieldTouched('password') ?
+                <span style={{ fontSize: '12px' }}>Пароль не менее 8 символов, с заглавной буквой и цифрой</span> :
+                ' '}
         >
             <Input.Password
+                onChange={(e) => setPasswordInput(e.target.value)}
+                value={passwordInput}
                 size="large"
                 data-test-id='change-password'
                 placeholder="Новый пароль" />
@@ -95,6 +110,8 @@ export const ChangePassword: FC<IChangePassword> = ({ pathFrom }) => {
         >
             <Input.Password
                 data-test-id='change-confirm-password'
+                onChange={(e) => setPasswordInput(e.target.value)}
+                value={passwordInput}
                 size="large"
                 placeholder="Повторите пароль" />
         </Form.Item>

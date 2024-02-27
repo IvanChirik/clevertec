@@ -1,4 +1,4 @@
-import { Card, Layout } from "antd";
+import { Card, Grid, Layout } from "antd";
 import { FC } from "react";
 import auth_background from '/images/auth_background.png';
 import styles from './auth-page.module.scss';
@@ -15,7 +15,8 @@ import { RootState } from "@redux/configure-store";
 
 export const AuthPage: FC = () => {
     const { isLoading } = useSelector((s: RootState) => s.app);
-
+    const { useBreakpoint } = Grid;
+    const screens = useBreakpoint();
 
     return <RequireNotAuthState>
         {isLoading && <Loader />}
@@ -33,14 +34,16 @@ export const AuthPage: FC = () => {
             }}>
                 <div className={styles.blur} />
                 <Card
+                    bodyStyle={{ padding: (screens?.xs) ? "0px" : "none", textAlign: 'center' }}
                     style={{
+                        margin: (screens?.xs) ? "0px 16px" : "none",
                         borderRadius: '2px',
                         zIndex: isLoading ? 1 : 12,
                         display: 'flex',
                         justifyContent: 'center',
                         gap: '48px',
-                        padding: '64px 32px',
-                        width: '539px',
+                        padding: (screens?.xs) ? "32px 16px" : '64px 32px',
+                        width: (screens?.xs) ? "auto" : '539px',
                     }}
                 >
                     <Outlet />
