@@ -197,7 +197,7 @@ export const LoginForm = () => {
                     </Form>
                 },
                 {
-                    label: <Link to={'/auth/registration'}>Регистрация</Link>,
+                    label: <Link to={'/auth/registration'}><span style={{ color: '#262626' }}>Регистрация</span></Link>,
                     key: '2',
                     children: <Navigate to={Paths.Auth.Registration} />
                 },

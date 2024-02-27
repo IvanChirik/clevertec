@@ -1,4 +1,4 @@
-import { Grid, Result } from "antd";
+import { Result } from "antd";
 import { FC, useEffect, useState } from "react";
 import VerificationInput from "react-verification-input";
 import styles from './ConfirmEmail.module.scss';
@@ -17,8 +17,6 @@ import { appActions } from "@redux/app.slice";
 
 
 export const ConfirmEmail: FC<IConfirmEmailProps> = ({ pathFrom }) => {
-    const { useBreakpoint } = Grid;
-    const screens = useBreakpoint()
     const [confirmEmail, { isLoading, isSuccess, isError }] = useConfirmEmailMutation();
     const email = useSelector((s: RootState) => s.auth.confirmEmail);
     const { pathname } = useLocation();
@@ -48,7 +46,7 @@ export const ConfirmEmail: FC<IConfirmEmailProps> = ({ pathFrom }) => {
             maxWidth: "539px",
             width: "calc(100% - 16px)",
             margin: "16px",
-            padding: screens.xs ? "32px 16px" : "64px 0",
+            padding: '0px',
             zIndex: 1,
             backgroundColor: "white"
         }}
@@ -83,7 +81,7 @@ export const ConfirmEmail: FC<IConfirmEmailProps> = ({ pathFrom }) => {
                     value={verificationCode}
                     onChange={(e) => setVerificationCode(e)}
                     classNames={{
-                        character: isError ? styles.characterError : styles.character,
+                        character: isError ? styles['character-error'] : styles.character,
                         characterInactive: styles['character--inactive']
                     }}
                 />

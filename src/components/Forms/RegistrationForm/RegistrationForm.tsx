@@ -79,7 +79,7 @@ export const RegistrationForm = () => {
                 tabBarGutter={0}
                 items={[
                     {
-                        label: <Link to={'/auth/login'}>Вход</Link>,
+                        label: <Link to={'/auth/login'}><span style={{ color: '#262626' }}>Вход</span></Link>,
                         key: '1',
                         children: <Navigate to={Paths.Auth.Login} />
                     },

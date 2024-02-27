@@ -1,9 +1,19 @@
-.input-wrapper {
+.character-error {
     display: flex;
-    flex-direction: column;
-    gap: 24px;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
+    border: 1px solid gray;
+    border-radius: 2px;
+    padding: 5px 12px;
+    width: 40px;
+    height: 40px;
+
+    font-family: var(--font-family);
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 130%;
+    text-align: center;
+    border: 1px solid red;
 }
 
 .character {
@@ -13,7 +23,7 @@
     border: 1px solid gray;
     border-radius: 2px;
     padding: 5px 12px;
-    width: clamp(20px, 100%, 40px);
+    width: 40px;
     height: 40px;
 
     font-family: var(--font-family);
@@ -21,10 +31,6 @@
     font-size: 14px;
     line-height: 130%;
     text-align: center;
-}
-
-.error {
-    border: 1px solid red;
 }
 
 .character--inactive {
