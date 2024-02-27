@@ -2,7 +2,7 @@ import { HeartFilled, IdcardTwoTone } from "@ant-design/icons"
 import { Card, Button, Image } from "antd"
 import { Content } from "antd/lib/layout/layout"
 import React from "react";
-import CalenderIcon from "@public//icons/content-calendar.svg";
+import CalenderIcon from "/icons/content-calendar.svg";
 import { useSelector } from "react-redux";
 import { RootState } from "@redux/configure-store";
 import useWindowWidth from "@hooks/use-window-width";

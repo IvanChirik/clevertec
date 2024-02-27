@@ -7,7 +7,7 @@ import { MainSidebar, MainContent, MainFooter, MainHeader } from '@components/La
 import { useSelector } from 'react-redux';
 import { RootState } from '@redux/configure-store';
 
-export const MainPage: React.FC = () => {
+const MainPage: React.FC = () => {
     const collapsed = useSelector((state: RootState) => state.app.collapsed);
     const { useBreakpoint } = Grid;
     const screens = useBreakpoint();
@@ -37,3 +37,5 @@ export const MainPage: React.FC = () => {
         </div>
     );
 };
+
+export default MainPage;
