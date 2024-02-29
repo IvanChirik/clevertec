@@ -2,7 +2,7 @@ import { GooglePlusOutlined } from "@ant-design/icons";
 import { Button, Form, Input, Tabs, Image, Grid } from "antd";
 import { Link, Navigate, useLocation } from "react-router-dom";
 import FullLogoIcon from "/icons/full-logo-icon.svg";
-import { ROUTER_PATHS as Paths } from "../../../routes/index";
+import { Paths } from "../../../routes";
 import { useRegistrationMutation } from "@services/auth-service";
 import { useEffect, useState } from "react";
 import { IAuthForm } from "@interfaces/auth.interface";

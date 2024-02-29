@@ -1,5 +1,6 @@
 import { API_URL } from '@config/API'
-import { IAuthErrorResponse, ICheckEmailResponse, ILoginResponse } from '@interfaces/auth.interface'
+import { ICheckEmailResponse, ILoginResponse } from '@interfaces/auth.interface'
+import { IErrorResponse } from '@interfaces/response-error.interface';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 interface IAuthData {
@@ -46,7 +47,7 @@ export const authApi = createApi({
                 method: 'POST',
                 body: authData
             }),
-            transformErrorResponse: (response: IAuthErrorResponse) => response
+            transformErrorResponse: (response: IErrorResponse) => response
         }),
 
         confirmEmail: builder.mutation<ICheckEmailResponse, Omit<IAuthData, 'password'> & { code: string }>({
@@ -55,7 +56,7 @@ export const authApi = createApi({
                 method: 'POST',
                 body: authData
             }),
-            transformErrorResponse: (response: IAuthErrorResponse) => response
+            transformErrorResponse: (response: IErrorResponse) => response
         }),
 
         changePassword: builder.mutation<Omit<ICheckEmailResponse, 'email'>, {
@@ -78,4 +79,4 @@ export const {
     useCheckEmailMutation,
     useChangePasswordMutation,
     useConfirmEmailMutation
-} = authApi
+} = authApi;

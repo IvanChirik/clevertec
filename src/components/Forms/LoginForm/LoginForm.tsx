@@ -4,7 +4,7 @@ import { Link, Navigate, useLocation } from "react-router-dom";
 import FullLogoIcon from "/icons/full-logo-icon.svg";
 import { useCheckEmailMutation, useLoginMutation } from "@services/auth-service";
 import { useEffect, useState } from "react";
-import { ROUTER_PATHS as Paths } from "../../../routes/index";
+import { Paths } from "../../../routes";
 import { IAuthForm } from "@interfaces/auth.interface";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@redux/configure-store";

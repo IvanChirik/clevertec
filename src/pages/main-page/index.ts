@@ -1,5 +1,5 @@
 import React from 'react';
 
-export const MainPage = React.lazy(() => import('@pages/main-page/main-page'));
+export const MainPage = React.lazy(() => import('./main-page'));
 
 

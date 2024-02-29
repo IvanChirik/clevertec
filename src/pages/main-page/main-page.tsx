@@ -6,15 +6,16 @@ import main_background from "/images/main_background.png"
 import { MainSidebar, MainContent, MainFooter, MainHeader } from '@components/Layout';
 import { useSelector } from 'react-redux';
 import { RootState } from '@redux/configure-store';
+import { Loader } from '@components/UI/Loader/Loader';
 
 const MainPage: React.FC = () => {
-    const collapsed = useSelector((state: RootState) => state.app.collapsed);
+    const { collapsed, isLoading } = useSelector((state: RootState) => state.app);
     const { useBreakpoint } = Grid;
     const screens = useBreakpoint();
-
     const layoutPaddingLeft = (screens?.xs) ? '0' : (collapsed ? '64px' : '208px');
 
-    return (
+    return (<>
+        {isLoading && <Loader />}
         <div style={{ maxWidth: "1440px", margin: "0 auto", position: "relative" }}>
             <Layout style={{ position: "relative" }}>
                 <MainSidebar />
@@ -35,6 +36,7 @@ const MainPage: React.FC = () => {
                 </Layout>
             </Layout >
         </div>
+    </>
     );
 };
 
