@@ -8,23 +8,29 @@ import { ChangePassword } from "@components/Forms/ChangePassword/ChangePassword"
 import { ConfirmEmail } from "@components/Forms/ConfirmEmail/ConfirmEmail";
 import { RequireAuth } from "../helpers/RequireAuth";
 import { MainPage } from "@pages/main-page";
-import { Suspense } from "react";
-import { Loader } from "@components/UI/Loader/Loader";
 
 
 export const routes = (
     <Routes>
-        <Route path={Paths.Main} element={<RequireAuth>
-            <Suspense fallback={<Loader />}><MainPage /></Suspense>
-        </RequireAuth>} />
+        <Route path={'/'} element={<RequireAuth>
+            <MainPage />
+        </RequireAuth>}>
+            <Route index element={<Navigate to={Paths.Main}></Navigate>} />
+            <Route path={Paths.Main} element={<MainPage />} />
+            <Route path={Paths.Feedbacks} element={<MainPage />} />
+        </Route>
+
+
         <Route path={AUTH_PATH} element={<AuthPage />} >
             <Route index element={<Navigate to={Paths.Auth.Login}></Navigate>} />
             <Route path={Paths.Auth.Login} element={<LoginForm />} />
             <Route path={Paths.Auth.Registration} element={<RegistrationForm />} />
             <Route path={Paths.Auth.ConfirmEmail} element={<ConfirmEmail pathFrom={Paths.Auth.Login} />} />
             <Route path={Paths.Auth.ChangePassword} element={<ChangePassword pathFrom={Paths.Auth.ConfirmEmail} />} />
-            <Route path="*" element={<Navigate to="/main" replace />} />
+            <Route path="*" element={<Navigate to={Paths.Main} replace />} />
         </Route>
+
+
         <Route path={RESULT_PATH} element={<AuthPage />}>
             <Route
                 path={Paths.Result.Registration.UserExistError}

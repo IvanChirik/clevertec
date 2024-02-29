@@ -1,10 +1,15 @@
 import { AndroidFilled, AppleFilled } from "@ant-design/icons"
+import { AppDispatch } from "@redux/configure-store";
+import { Paths } from "@routes/index";
 import { Button, Card, Grid } from "antd"
 import { Footer } from "antd/lib/layout/layout"
+import { useDispatch } from "react-redux";
+import { push } from "redux-first-history";
 
 export const MainFooter: React.FC = () => {
   const { useBreakpoint } = Grid;
   const screens = useBreakpoint();
+  const dispatch = useDispatch<AppDispatch>();
   return (
     <Footer style={{
       padding: screens?.xs ? "0 24px 42px" : "42px 24px",
@@ -16,7 +21,9 @@ export const MainFooter: React.FC = () => {
       justifyContent: screens?.xs ? "center" : "space-between"
     }}>
 
-      <Button type='link'>
+      <Button
+        onClick={() => dispatch(push(Paths.Feedbacks))}
+        type='link'>
         Смотреть отзывы
       </Button>
       <Card
