@@ -1,12 +1,12 @@
+import { FeedbackCard, NotFoundFeedbackCard } from "@components/Cards/FeedbackCards";
 import { FC } from "react";
 
 
 const FeedbackPage: FC = () => {
-    return (
-        <div>
-
-        </div>
-    );
+    return <>
+        <FeedbackCard />
+        <NotFoundFeedbackCard />
+    </>
 };
 
 export default FeedbackPage;

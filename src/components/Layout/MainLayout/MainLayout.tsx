@@ -21,6 +21,8 @@ const MainLayout: React.FC = () => {
                 <Sidebar />
                 <Layout style={{
                     position: 'relative',
+                    display: 'flex',
+                    flexDirection: 'column',
                     transition: "padding-left 0.146s linear",
                     paddingLeft: layoutPaddingLeft,
                     minHeight: "100dvh",
@@ -28,7 +30,6 @@ const MainLayout: React.FC = () => {
                     backgroundImage: `url(${main_background})`,
                     backgroundSize: "cover",
                     backgroundRepeat: "no-repeat",
-
                 }}>
                     <Suspense fallback={isLoading}><Outlet /></Suspense>
                 </Layout>
