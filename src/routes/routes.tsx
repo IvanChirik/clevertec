@@ -1,23 +1,20 @@
 import { LoginForm } from "@components/Forms/LoginForm/LoginForm";
 import { RegistrationForm } from "@components/Forms/RegistrationForm/RegistrationForm";
-import { AuthPage } from "@pages/auth-page";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { AUTH_PATH, ROUTER_PATHS as Paths, RESULT_PATH } from "./route-paths";
 import { AuthResult } from "@components/AuthResult/AuthResult";
 import { ChangePassword } from "@components/Forms/ChangePassword/ChangePassword";
 import { ConfirmEmail } from "@components/Forms/ConfirmEmail/ConfirmEmail";
-import { RequireAuth } from "../helpers/RequireAuth";
-import { MainPage } from "@pages/main-page";
+import { MainPage, AuthPage, FeedbackPage } from "@pages/index";
+import { MainLayout } from "@components/Layout";
 
 
 export const routes = (
     <Routes>
-        <Route path={'/'} element={<RequireAuth>
-            <MainPage />
-        </RequireAuth>}>
+        <Route path={'/'} element={<MainLayout />}>
             <Route index element={<Navigate to={Paths.Main}></Navigate>} />
             <Route path={Paths.Main} element={<MainPage />} />
-            <Route path={Paths.Feedbacks} element={<MainPage />} />
+            <Route path={Paths.Feedbacks} element={<FeedbackPage />} />
         </Route>
 
 

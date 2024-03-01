@@ -1,26 +1,24 @@
 import { Button, Drawer, Grid, Image, Layout, Menu, Space } from 'antd';
 import {
-  HeartFilled,
-  IdcardOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
-  TrophyFilled,
 } from '@ant-design/icons';
-import React from 'react';
 import FullLogoIcon from "/icons/full-logo-icon.svg"
 import CollapsedLogoIcon from "/icons/collapsed-logo-icon.svg"
-import CalenderIcon from "/icons/calendar-icon.svg"
 import ExitIcon from "/icons/exit-icon.svg"
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@redux/configure-store';
-import styles from './MainSidebar.module.scss';
+import styles from './Sidebar.module.scss';
 import useWindowWidth from '@hooks/use-window-width';
 import { appActions } from '@redux/app.slice';
 import { authActions } from '@redux/auth.slice';
 import { ROUTER_PATHS as Paths } from '@routes/route-paths';
 import { push } from 'redux-first-history';
+import { navItems } from '@config/sidebarConfig';
 
-export const MainSidebar = () => {
+
+
+export const Sidebar = () => {
   const width = useWindowWidth()
   const { useBreakpoint } = Grid;
   const screens = useBreakpoint();
@@ -33,39 +31,7 @@ export const MainSidebar = () => {
     dispatch(push(Paths.Auth.Login));
   };
 
-  const navItems = [
-    {
-      icon: CalenderIcon,
-      name: 'Календарь',
-      href: '',
-    },
-    {
-      icon: HeartFilled,
-      name: 'Тренировки',
-      href: '',
-    },
-    {
-      icon: TrophyFilled,
-      name: 'Достижения',
-      href: '',
-    },
-    {
-      icon: IdcardOutlined,
-      name: 'Профиль',
-      href: '',
-    },
-  ]
 
-  const items = navItems.map(
-    (item, index) => ({
-      key: String(index + 1),
-      icon: (item?.icon !== CalenderIcon) ? React.createElement(item.icon) : React.createElement(Image, {
-        src: item.icon,
-        alt: 'Calendar',
-      }),
-      label: item.name,
-    }),
-  );
 
 
   const setNavCollapsed = (value: boolean) => {
@@ -123,7 +89,7 @@ export const MainSidebar = () => {
           }}
           theme="light" mode="inline" defaultSelectedKeys={['0']}>
 
-          {items.map((item, index) => (
+          {navItems.map((item, index) => (
             <Menu.Item
               style={{
                 height: "42px",
@@ -132,7 +98,7 @@ export const MainSidebar = () => {
                 paddingLeft: "0px",
                 justifyContent: "center",
               }}
-              key={index} className={index === items.length - 1 ? 'last-menu-item' : ''}>
+              key={index} className={index === navItems.length - 1 ? 'last-menu-item' : ''}>
               <span style={{
                 color: "#061178",
                 paddingRight: "10px",
@@ -257,14 +223,14 @@ export const MainSidebar = () => {
               border: 0
             }}
             theme="light" mode="inline" defaultSelectedKeys={['new']} >
-            {items.map((item, index) => (
+            {navItems.map((item, index) => (
               <Menu.Item
                 style={{
                   height: "42px",
                   margin: 0,
                   padding: 0,
                 }}
-                key={index} className={index === items.length - 1 ? 'last-menu-item' : ''}>
+                key={index} className={index === navItems.length - 1 ? 'last-menu-item' : ''}>
                 {item.label}
               </Menu.Item>
             ))}
