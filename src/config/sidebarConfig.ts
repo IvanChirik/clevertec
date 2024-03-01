@@ -3,7 +3,7 @@ import {
   IdcardOutlined,
   TrophyFilled,
 } from '@ant-design/icons';
-import CalenderSVG from "@public/icons/calendar-icon.svg"
+import CalenderSVG from "/public/icons/calendar-icon.svg"
 import { Image } from 'antd';
 import React from 'react';
 

@@ -1,10 +1,10 @@
-import { LoginForm } from "@components/Forms/LoginForm/LoginForm";
-import { RegistrationForm } from "@components/Forms/RegistrationForm/RegistrationForm";
+import { LoginForm } from "@components/Forms/Auth/LoginForm/LoginForm";
+import { RegistrationForm } from "@components/Forms/Auth/RegistrationForm/RegistrationForm";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { AUTH_PATH, ROUTER_PATHS as Paths, RESULT_PATH } from "./route-paths";
-import { AuthResult } from "@components/AuthResult/AuthResult";
-import { ChangePassword } from "@components/Forms/ChangePassword/ChangePassword";
-import { ConfirmEmail } from "@components/Forms/ConfirmEmail/ConfirmEmail";
+import { AuthResult } from "@components/Results/AuthResult/AuthResult";
+import { ChangePassword } from "@components/Forms/Auth/ChangePassword/ChangePassword";
+import { ConfirmEmail } from "@components/Forms/Auth/ConfirmEmail/ConfirmEmail";
 import { MainPage, AuthPage, FeedbackPage } from "@pages/index";
 import { MainLayout } from "@components/Layout";
 
