@@ -9,6 +9,7 @@ import { Loader } from '@components/UI/Loader/Loader';
 const MainPage: React.FC = () => {
     const { isLoading } = useSelector((state: RootState) => state.app);
 
+
     return (<>
         {isLoading && <Loader />}
         <MainHeader />

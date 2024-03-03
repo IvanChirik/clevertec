@@ -1,9 +1,10 @@
 
 
+
 export interface IFeedbackResponseData {
     id: string;
-    fullName: null;
-    imageSrc: null;
+    fullName: string | null;
+    imageSrc: string | null;
     message: string;
     rating: number;
     createdAt: string;

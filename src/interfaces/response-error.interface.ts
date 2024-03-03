@@ -5,6 +5,6 @@ export interface IErrorResponseData {
 }
 
 export interface IErrorResponse {
-    data: IErrorResponse;
+    data: IErrorResponseData;
     status: number;
 }

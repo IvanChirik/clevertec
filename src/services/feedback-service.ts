@@ -8,9 +8,8 @@ interface IFeedbackData {
     message: string;
 }
 
-export const reviewApi = createApi({
+export const feedbackApi = createApi({
     reducerPath: 'feedbackApi',
-    tagTypes: ['Feedback'],
     baseQuery: fetchBaseQuery({
         baseUrl: API_URL,
         prepareHeaders: (headers, { getState }) => {
@@ -18,35 +17,34 @@ export const reviewApi = createApi({
             headers.set('Accept', 'application/json');
             headers.set('Set-Cookie', 'myCookie=myValue; SameSite=None; Secure');
             const token = localStorage.getItem('access_token') || (getState() as RootState).auth.accessToken;
+            console.log(token)
             headers.set('Authorization', `Bearer ${token}`);
             return headers;
         },
         credentials: 'include',
         mode: 'cors'
     }),
+    tagTypes: ['Feedback'],
     endpoints: (builder) => ({
-        getReviews: builder.query<IFeedbackResponseData[], void>({
-            query: () => ({
-                url: '/feedback',
+        getReviews: builder.query<IFeedbackResponseData[], boolean>({
+            query: (clicked) => ({
+                url: `${clicked ? '/feedback' : null}`,
                 providesTags: (result: IFeedbackResponseData[]) =>
                     result
-                        ? [
-                            ...result.map(({ id }) => ({ type: 'Feedback' as const, id })),
-                            { type: 'Feedback', id: 'LIST' },
-                        ]
-                        : [{ type: 'Feedback', id: 'LIST' }],
+                        ? [...result.map(({ id }) => ({ type: 'Feedback' as const, id })), 'Feedback']
+                        : ['Feedback'],
             }),
             transformResponse: (response: IFeedbackResponseData[]) => response,
             transformErrorResponse: (response: { status: string | number }) => response
         }),
 
-        createReview: builder.mutation<Record<string, unknown>, IFeedbackData>({
+        createReview: builder.mutation<IFeedbackResponseData, IFeedbackData>({
             query: (reviewData: IFeedbackData) => ({
                 url: '/feedback',
                 method: 'POST',
                 body: reviewData
             }),
-            invalidatesTags: [{ type: 'Feedback', id: 'LIST' }],
+            invalidatesTags: ['Feedback'],
             transformErrorResponse: (response: { status: string | number }) => response
         }),
 
@@ -58,4 +56,4 @@ export const reviewApi = createApi({
 export const {
     useGetReviewsQuery,
     useCreateReviewMutation,
-} = reviewApi;
+} = feedbackApi;
