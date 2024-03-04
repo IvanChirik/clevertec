@@ -3,11 +3,11 @@ import { IFeedbackResponseData } from '@interfaces/feedback.interface';
 import { RootState } from '@redux/configure-store';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
+
 interface IFeedbackData {
     rating: number;
     message: string;
 }
-
 export const feedbackApi = createApi({
     reducerPath: 'feedbackApi',
     baseQuery: fetchBaseQuery({
@@ -27,25 +27,28 @@ export const feedbackApi = createApi({
     tagTypes: ['Feedback'],
     endpoints: (builder) => ({
         getReviews: builder.query<IFeedbackResponseData[], boolean>({
-            query: (clicked) => ({
-                url: `${clicked ? '/feedback' : null}`,
+            query: (clicked) => clicked ? {
+                url: '/feedbackk',
                 providesTags: (result: IFeedbackResponseData[]) =>
                     result
-                        ? [...result.map(({ id }) => ({ type: 'Feedback' as const, id })), 'Feedback']
-                        : ['Feedback'],
-            }),
+                        ? [
+                            ...result.map(({ id }) => ({ type: 'Feedback' as const, id })),
+                            { type: 'Feedback', id: 'LIST' },
+                        ]
+                        : [{ type: 'Feedback', id: 'LIST' }],
+            } : '',
             transformResponse: (response: IFeedbackResponseData[]) => response,
             transformErrorResponse: (response: { status: string | number }) => response
         }),
 
-        createReview: builder.mutation<IFeedbackResponseData, IFeedbackData>({
+        createReview: builder.mutation<IFeedbackResponseData, Partial<IFeedbackResponseData>>({
             query: (reviewData: IFeedbackData) => ({
                 url: '/feedback',
                 method: 'POST',
                 body: reviewData
             }),
-            invalidatesTags: ['Feedback'],
-            transformErrorResponse: (response: { status: string | number }) => response
+            transformErrorResponse: (response: { status: string | number }) => response,
+            invalidatesTags: [{ type: 'Feedback', id: 'LIST' }],
         }),
 
 

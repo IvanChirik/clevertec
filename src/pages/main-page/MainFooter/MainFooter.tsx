@@ -40,12 +40,14 @@ export const MainFooter: React.FC = () => {
       dispatch(push(Paths.Feedbacks));
     if (isError && error) {
       const customError = error as CustomError;
+
       if (customError.data.statusCode === 403) {
         localStorage.removeItem('access_token');
         dispatch(authActions.setAccessToken(''))
         dispatch(push(Paths.Auth.Login));
+        return
       }
-      if (customError.data.statusCode !== 403 && customError.data.statusCode !== 404)
+      if (customError.data.statusCode !== 403)
         showModal()
     }
   }, [isSuccess, isError, dispatch])
@@ -64,6 +66,7 @@ export const MainFooter: React.FC = () => {
     }}>
 
       <Button
+        data-test-id='see-reviews'
         onClick={getFeedback}
         type='link'>
         Смотреть отзывы

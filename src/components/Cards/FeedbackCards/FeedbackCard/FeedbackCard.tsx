@@ -27,7 +27,7 @@ export const FeedbackCard: FC<IFeedbackCardProps> = ({ reviewData }) => {
         }}>
         <div style={{
             display: 'flex',
-            flexDirection: 'column',
+            flexDirection: `${screens.xs ? 'row' : 'column'}`,
             gap: '12px',
             minWidth: '174px',
             alignItems: 'center',
@@ -40,7 +40,7 @@ export const FeedbackCard: FC<IFeedbackCardProps> = ({ reviewData }) => {
                     }}
                     width={42}
                     height={42}
-                    src={imageSrc ? imageSrc : 'error'}
+                    src={imageSrc}
                 /> :
                 <div
                     style={{
@@ -65,7 +65,11 @@ export const FeedbackCard: FC<IFeedbackCardProps> = ({ reviewData }) => {
                 style={{
                     marginBottom: '16px'
                 }}>
-                <Rate value={rating} />
+                <Rate
+                    style={{
+                        color: '#faad14'
+                    }}
+                    value={rating} />
                 <Text style={{
                     marginLeft: '16px',
                 }} type="secondary">{formatDate(createdAt)}</Text>

@@ -22,6 +22,13 @@ export const authApi = createApi({
         mode: 'cors'
     }),
     endpoints: (builder) => ({
+        googleAuth: builder.query<ILoginResponse, void>({
+            query: () => ({
+                url: '/auth/google',
+            }),
+            transformResponse: (response: ILoginResponse) => response,
+            transformErrorResponse: (response: { status: string | number }) => response
+        }),
         login: builder.mutation<ILoginResponse, IAuthData>({
             query: (authData) => ({
                 url: '/auth/login',

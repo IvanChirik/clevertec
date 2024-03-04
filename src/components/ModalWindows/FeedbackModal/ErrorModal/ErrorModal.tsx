@@ -23,6 +23,7 @@ export const ErrorModal: FC<IErrorModal> = ({ open, closeNewReviewModal, closeHa
             subTitle="Что-то пошло не так. Попробуйте ещё раз."
             extra={[
                 <Button
+                    data-test-id='write-review-not-saved-modal'
                     onClick={closeHandler}
                     type="primary" >
                     Написать отзыв

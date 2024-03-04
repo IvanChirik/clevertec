@@ -12,6 +12,7 @@ import { push } from "redux-first-history";
 import { authActions } from "@redux/auth.slice";
 import { useForm } from "antd/lib/form/Form";
 import { appActions } from "@redux/app.slice";
+import { API_URL } from "@config/API";
 
 
 
@@ -189,7 +190,7 @@ export const LoginForm = () => {
                         </Form.Item>
 
                         <Form.Item>
-                            <Button size="large" type="default" htmlType="submit" style={{ width: '100%' }}>
+                            <Button onClick={() => window.location.href = `${API_URL}/auth/google`} size="large" type="default" htmlType="submit" style={{ width: '100%' }}>
                                 <GooglePlusOutlined />
                                 <span>Войти через Google</span>
                             </Button>

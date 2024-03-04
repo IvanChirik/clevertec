@@ -7,6 +7,8 @@ import { useAppDispatch } from "@hooks/typed-react-redux-hooks";
 import { appActions } from "@redux/app.slice";
 import { useModalWindow } from "@hooks/use-modal-windows";
 import { ErrorModal, SuccessModal } from "..";
+import { $api } from "@config/axiosConfig";
+import { API_URL } from "@config/API";
 
 
 export const NewFeedbackModal: FC<INewFeedbackModal> = ({ open, onCancel, closeHandler }) => {
@@ -26,6 +28,7 @@ export const NewFeedbackModal: FC<INewFeedbackModal> = ({ open, onCancel, closeH
     useEffect(() => {
         if (isSuccess) {
             closeHandler();
+            $api.get(`${API_URL}/feedback`);
             showSuccessModal();
         }
         if (isError) {
@@ -46,7 +49,7 @@ export const NewFeedbackModal: FC<INewFeedbackModal> = ({ open, onCancel, closeH
             style={{ top: 20 }}
             footer={[
                 <Button
-                    key={'fd'}
+                    data-test-id='new-review-submit-button'
                     disabled={rateValue > 0 && rateValue < 6 ? false : true}
                     style={{
                         width: `${screens.xs ? '100%' : 'auto'}`
@@ -56,6 +59,9 @@ export const NewFeedbackModal: FC<INewFeedbackModal> = ({ open, onCancel, closeH
             ]}
         >
             <Rate
+                style={{
+                    color: '#faad14',
+                }}
                 value={rateValue}
                 onChange={setRateValue} />
             <TextArea
@@ -68,7 +74,6 @@ export const NewFeedbackModal: FC<INewFeedbackModal> = ({ open, onCancel, closeH
                     minHeight: '46px'
                 }}
                 minLength={2}
-                placeholder="Autosize height based on content lines"
             />
         </Modal>
         <SuccessModal
