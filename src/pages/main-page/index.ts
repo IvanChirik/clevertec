@@ -1,5 +1,3 @@
-import React from 'react';
-
-export const MainPage = React.lazy(() => import('@pages/main-page/main-page'));
-
-
+export { MainHeader } from './MainHeader';
+export { MainContent } from './MainContent';
+export { MainFooter } from './MainFooter';

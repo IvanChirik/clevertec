@@ -1,8 +1,9 @@
 import { API_URL } from '@config/API'
-import { IAuthErrorResponse, ICheckEmailResponse, ILoginResponse } from '@interfaces/auth.interface'
+import { ICheckEmailResponse, ILoginResponse } from '../types/auth.types'
+import { IErrorResponse } from '../types/response-error.types';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
-interface IAuthData {
+type IAuthData = {
     email: string;
     password: string;
 }
@@ -21,6 +22,13 @@ export const authApi = createApi({
         mode: 'cors'
     }),
     endpoints: (builder) => ({
+        googleAuth: builder.query<ILoginResponse, void>({
+            query: () => ({
+                url: '/auth/google',
+            }),
+            transformResponse: (response: ILoginResponse) => response,
+            transformErrorResponse: (response: { status: string | number }) => response
+        }),
         login: builder.mutation<ILoginResponse, IAuthData>({
             query: (authData) => ({
                 url: '/auth/login',
@@ -46,7 +54,7 @@ export const authApi = createApi({
                 method: 'POST',
                 body: authData
             }),
-            transformErrorResponse: (response: IAuthErrorResponse) => response
+            transformErrorResponse: (response: IErrorResponse) => response
         }),
 
         confirmEmail: builder.mutation<ICheckEmailResponse, Omit<IAuthData, 'password'> & { code: string }>({
@@ -55,7 +63,7 @@ export const authApi = createApi({
                 method: 'POST',
                 body: authData
             }),
-            transformErrorResponse: (response: IAuthErrorResponse) => response
+            transformErrorResponse: (response: IErrorResponse) => response
         }),
 
         changePassword: builder.mutation<Omit<ICheckEmailResponse, 'email'>, {
@@ -78,4 +86,4 @@ export const {
     useCheckEmailMutation,
     useChangePasswordMutation,
     useConfirmEmailMutation
-} = authApi
+} = authApi;

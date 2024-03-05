@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
-interface IInitialAuthState {
+type IInitialAuthState = {
     registrationData?: {
         email: string,
         password: string

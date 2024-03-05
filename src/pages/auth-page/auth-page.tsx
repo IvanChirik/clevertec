@@ -2,20 +2,16 @@ import { Card, Grid, Layout } from "antd";
 import { FC } from "react";
 import auth_background from '/images/auth_background.png';
 import styles from './auth-page.module.scss';
-
 import { Outlet } from "react-router-dom";
 import { RequireNotAuthState } from "../../helpers/RequireNotAuthState";
 import { Loader } from "@components/UI/Loader/Loader";
-import { useSelector } from "react-redux";
-import { RootState } from "@redux/configure-store";
-
-
+import { useAppSelector } from "@hooks/typed-react-redux-hooks";
+const { useBreakpoint } = Grid;
 
 
 
 export const AuthPage: FC = () => {
-    const { isLoading } = useSelector((s: RootState) => s.app);
-    const { useBreakpoint } = Grid;
+    const { isLoading } = useAppSelector(s => s.app);
     const screens = useBreakpoint();
 
     return <RequireNotAuthState>

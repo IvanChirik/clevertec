@@ -1,2 +1,2 @@
-export * from './route-paths';
-export * from './routes';
+export { AUTH_PATH, RESULT_PATH, ROUTER_PATHS as Paths } from './route-paths';
+export { routes } from './routes';

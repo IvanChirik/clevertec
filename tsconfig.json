@@ -52,14 +52,14 @@
             "@routes/*": [
                 "./src/routes/*"
             ],
-            "@interfaces/*": [
-                "./src/interfaces/*"
-            ],
             "@services/*": [
                 "./src/services/*"
             ],
             "@assets/*": [
                 "./src/assets/*"
+            ],
+            "@helpers/*": [
+                "./src/helpers/*"
             ],
         },
         "plugins": [

@@ -1,4 +1,5 @@
-export { MainSidebar } from './MainSidebar';
-export { MainHeader } from './MainHeader';
-export { MainFooter } from './MainFooter';
-export { MainContent } from './MainContent';
+import { lazy } from 'react';
+
+
+
+export const MainLayout = lazy(() => import('./MainLayout/MainLayout'));
