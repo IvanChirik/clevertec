@@ -1,10 +1,8 @@
-import { AppDispatch, RootState } from "@redux/configure-store";
 import { ROUTER_PATHS as Paths } from "@routes/route-paths";
 import { useChangePasswordMutation } from "@services/auth-service";
 import { Button, Form, Input } from "antd";
 import Title from "antd/lib/typography/Title";
 import { FC, useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { push } from "redux-first-history";
 import { IChangePassword } from "./ChangePassword.props";
 import { useLocation } from "react-router-dom";
@@ -12,16 +10,17 @@ import { authActions } from "@redux/auth.slice";
 import { useCheckPathname } from "@hooks/use-check-pathname";
 import { appActions } from "@redux/app.slice";
 import { useForm } from "antd/lib/form/Form";
+import { useAppDispatch, useAppSelector } from "@hooks/typed-react-redux-hooks";
 
 
 
 export const ChangePassword: FC<IChangePassword> = ({ pathFrom }) => {
     const [changePassword, { isLoading, isSuccess, isError, error }] = useChangePasswordMutation();
-    const dispatch = useDispatch<AppDispatch>();
+    const dispatch = useAppDispatch();
     const [form] = useForm();
     const [passwordInput, setPasswordInput] = useState<string>('');
-    const previousPassword = useSelector((s: RootState) => s.auth.changePasswordData);
-    const history = useSelector((s: RootState) => s.router);
+    const previousPassword = useAppSelector(s => s.auth.changePasswordData);
+    const history = useAppSelector(s => s.router);
     const { pathname } = useLocation();
     const passwordValidator = (password: string) => {
         const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{8,}$/;

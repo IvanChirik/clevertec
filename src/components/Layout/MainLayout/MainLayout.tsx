@@ -2,16 +2,14 @@ import React, { Suspense } from 'react';
 import { Grid, Layout } from 'antd';
 import main_background from "/images/main_background.png"
 import { Sidebar } from './Sidebar';
-import { useSelector } from 'react-redux';
-import { RootState } from '@redux/configure-store';
 import { Outlet } from 'react-router-dom';
 import { RequireAuth } from '@helpers/RequireAuth';
-
+import { useAppSelector } from '@hooks/typed-react-redux-hooks';
+const { useBreakpoint } = Grid;
 
 
 const MainLayout: React.FC = () => {
-    const { collapsed, isLoading } = useSelector((state: RootState) => state.app);
-    const { useBreakpoint } = Grid;
+    const { collapsed, isLoading } = useAppSelector(s => s.app);
     const screens = useBreakpoint();
     const layoutPaddingLeft = (screens?.xs) ? '0' : (collapsed ? '64px' : '208px');
 

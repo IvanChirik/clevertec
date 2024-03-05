@@ -1,11 +1,10 @@
 import { Card, Grid, Typography } from "antd";
 import Title from "antd/lib/typography/Title";
 import { FC } from "react";
-
+const { Text } = Typography;
+const { useBreakpoint } = Grid;
 
 export const NotFoundFeedbackCard: FC = () => {
-    const { Text } = Typography;
-    const { useBreakpoint } = Grid;
     const screens = useBreakpoint();
 
 

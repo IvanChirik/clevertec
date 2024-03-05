@@ -1,7 +1,7 @@
-import { IFeedbackResponseData } from "@interfaces/feedback.interface";
+import { IFeedbackResponseData } from "../../../../types/feedback.types";
 import { CardProps } from "antd";
 
 
-export interface IFeedbackCardProps extends CardProps {
+export type IFeedbackCardProps = CardProps & {
     reviewData: IFeedbackResponseData
 }

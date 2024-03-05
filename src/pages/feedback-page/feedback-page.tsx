@@ -3,7 +3,7 @@ import { ErrorStatus500, NewFeedbackModal } from "@components/ModalWindows/Feedb
 import { Loader } from "@components/UI/Loader/Loader";
 import { useAppDispatch, useAppSelector } from "@hooks/typed-react-redux-hooks";
 import { useModalWindow } from "@hooks/use-modal-windows";
-import { IErrorResponse } from "@interfaces/response-error.interface";
+import { IErrorResponse, StatusCode } from "@types/response-error.types";
 import { appActions } from "@redux/app.slice";
 import { authActions } from "@redux/auth.slice";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
@@ -15,7 +15,9 @@ import { FC, useEffect, useState } from "react";
 import { push } from "redux-first-history";
 
 
+const { useBreakpoint } = Grid;
 type CustomError = FetchBaseQueryError & IErrorResponse
+
 
 const FeedbackPage: FC = () => {
     const { isModalOpen, showModal, handleCancel } = useModalWindow();
@@ -24,10 +26,9 @@ const FeedbackPage: FC = () => {
         isModalOpen: isErrorModalOpen,
         showModal: showErrorModal,
         handleCancel: hanleErrorCancel } = useModalWindow();
-    const { useBreakpoint } = Grid;
     const dispatch = useAppDispatch();
     const screens = useBreakpoint();
-    const [allFeedbackVisible, setAllFeedbackVisible] = useState<boolean>(false);
+    const [allFeedbackVisible, setAllFeedbackVisible] = useState(false);
     const sortedData = allFeedbackVisible ? feedbackData?.map(review => <FeedbackCard
         key={review.id}
         reviewData={review} />) :
@@ -50,7 +51,7 @@ const FeedbackPage: FC = () => {
             dispatch(push(Paths.Feedbacks));
         if (isError && error) {
             const customError = error as CustomError;
-            if (customError?.data?.statusCode === 403) {
+            if (customError?.data?.statusCode === StatusCode.Forbidden) {
                 localStorage.removeItem('access_token');
                 dispatch(authActions.setAccessToken(''))
                 dispatch(push(Paths.Auth.Login));

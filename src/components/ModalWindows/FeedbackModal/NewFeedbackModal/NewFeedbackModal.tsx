@@ -10,6 +10,7 @@ import { ErrorModal, SuccessModal } from "..";
 import { $api } from "@config/axiosConfig";
 import { API_URL } from "@config/API";
 import { StarFilled, StarTwoTone } from "@ant-design/icons";
+const { useBreakpoint } = Grid;
 
 
 export const NewFeedbackModal: FC<INewFeedbackModal> = ({ open, onCancel, closeHandler }) => {
@@ -19,7 +20,6 @@ export const NewFeedbackModal: FC<INewFeedbackModal> = ({ open, onCancel, closeH
     const { isModalOpen: isSuccessOpen, showModal: showSuccessModal, handleCancel: closeSuccess } = useModalWindow();
     const [createReview, { isLoading, isSuccess, isError }] = useCreateReviewMutation();
     const dispatch = useAppDispatch();
-    const { useBreakpoint } = Grid;
     const screens = useBreakpoint();
 
     const submitReview = async () => {

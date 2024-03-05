@@ -2,8 +2,9 @@ import { SettingOutlined } from "@ant-design/icons"
 import { Button, Grid } from "antd"
 import { Header } from "antd/lib/layout/layout"
 
+const { useBreakpoint } = Grid;
+
 export const MainHeader: React.FC = () => {
-  const { useBreakpoint } = Grid;
   const screens = useBreakpoint();
   return (
     <Header style={{

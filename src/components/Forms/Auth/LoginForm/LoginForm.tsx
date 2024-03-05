@@ -5,28 +5,27 @@ import FullLogoIcon from "/icons/full-logo-icon.svg";
 import { useCheckEmailMutation, useLoginMutation } from "@services/auth-service";
 import { useEffect, useState } from "react";
 import { Paths } from "../../../../routes";
-import { IAuthForm } from "@interfaces/auth.interface";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@redux/configure-store";
+import { IAuthForm } from "../../../../types/auth.types";
 import { push } from "redux-first-history";
 import { authActions } from "@redux/auth.slice";
 import { useForm } from "antd/lib/form/Form";
 import { appActions } from "@redux/app.slice";
 import { API_URL } from "@config/API";
-
+import { useAppDispatch, useAppSelector } from "@hooks/typed-react-redux-hooks";
+import { StatusCode } from "@types/response-error.types";
+const { useBreakpoint } = Grid;
 
 
 export const LoginForm = () => {
-    const { useBreakpoint } = Grid;
     const screens = useBreakpoint();
     const [login, { isLoading: isLoginLoading, isSuccess: isLoginSuccess, isError: isLoginError, data }] = useLoginMutation();
     const [checkEmail, { isSuccess: isCheckSuccess, isError: isCheckError, error }] = useCheckEmailMutation();
     const [emailInput, setEmailInput] = useState<string>('');
-    const confirmEmail = useSelector((s: RootState) => s.auth.confirmEmail);
-    const history = useSelector((s: RootState) => s.router);
+    const confirmEmail = useAppSelector(s => s.auth.confirmEmail);
+    const history = useAppSelector(s => s.router);
     const { pathname } = useLocation();
     const [form] = useForm();
-    const dispatch = useDispatch<AppDispatch>();
+    const dispatch = useAppDispatch();
     const onFinish = async (values: IAuthForm) => {
         if (values.email && values.password)
             await login({
@@ -67,7 +66,7 @@ export const LoginForm = () => {
         if (isCheckError && error) {
             if ('status' in error) {
                 const errData = 'error' in error ? error.error : JSON.parse(JSON.stringify(error.data));
-                if (error.status === 404 && errData.message === 'Email не найден')
+                if (error.status === StatusCode.NotFound && errData.message === 'Email не найден')
                     dispatch(push(Paths.Result.PasswordRecovery.CheckEmail.ExistError, { from: pathname }));
                 else
                     dispatch(push(Paths.Result.PasswordRecovery.CheckEmail.Error, { from: pathname }));

@@ -1,11 +1,11 @@
 import { API_URL } from '@config/API'
-import { IFeedbackResponseData } from '@interfaces/feedback.interface';
+import { IFeedbackResponseData } from '../types/feedback.types';
 import { RootState } from '@redux/configure-store';
 import { feedbackActions } from '@redux/feedback.slice.';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 
-interface IFeedbackData {
+type IFeedbackData = {
     rating: number;
     message: string;
 }

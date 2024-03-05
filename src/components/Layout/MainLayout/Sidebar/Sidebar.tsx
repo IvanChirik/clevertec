@@ -6,8 +6,6 @@ import {
 import FullLogoIcon from "/icons/full-logo-icon.svg"
 import CollapsedLogoIcon from "/icons/collapsed-logo-icon.svg"
 import ExitIcon from "/icons/exit-icon.svg"
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '@redux/configure-store';
 import styles from './Sidebar.module.scss';
 import useWindowWidth from '@hooks/use-window-width';
 import { appActions } from '@redux/app.slice';
@@ -15,15 +13,15 @@ import { authActions } from '@redux/auth.slice';
 import { ROUTER_PATHS as Paths } from '@routes/route-paths';
 import { push } from 'redux-first-history';
 import { navItems } from '@config/sidebarConfig';
-
+import { useAppDispatch, useAppSelector } from '@hooks/typed-react-redux-hooks';
+const { useBreakpoint } = Grid;
 
 
 export const Sidebar = () => {
   const width = useWindowWidth()
-  const { useBreakpoint } = Grid;
   const screens = useBreakpoint();
-  const collapsed = useSelector((state: RootState) => state.app.collapsed);
-  const dispatch = useDispatch<AppDispatch>();
+  const collapsed = useAppSelector(s => s.app.collapsed);
+  const dispatch = useAppDispatch();
   const { Sider } = Layout;
   const logoutHandler = () => {
     localStorage.removeItem('access_token');

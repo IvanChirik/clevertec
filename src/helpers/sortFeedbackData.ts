@@ -1,4 +1,4 @@
-import { IFeedbackResponseData } from "@interfaces/feedback.interface";
+import { IFeedbackResponseData } from "@types/feedback.types";
 
 export const sortedData = (data: IFeedbackResponseData[]) => {
     const clonedData = [...data]

@@ -3,13 +3,12 @@ import { Card, Button, Image } from "antd"
 import { Content } from "antd/lib/layout/layout"
 import React from "react";
 import CalenderIcon from "/icons/content-calendar.svg";
-import { useSelector } from "react-redux";
-import { RootState } from "@redux/configure-store";
 import useWindowWidth from "@hooks/use-window-width";
+import { useAppSelector } from "@hooks/typed-react-redux-hooks";
 
 
 export const MainContent: React.FC = () => {
-  const collapsed = useSelector((state: RootState) => state.app.collapsed);
+  const collapsed = useAppSelector(s => s.app.collapsed);
   const width = useWindowWidth()
   return (
     <Content style={{ overflow: 'initial' }}>

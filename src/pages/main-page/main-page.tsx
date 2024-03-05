@@ -1,13 +1,12 @@
 import React from 'react';
 import { MainContent, MainFooter, MainHeader } from './';
-import { useSelector } from 'react-redux';
-import { RootState } from '@redux/configure-store';
 import { Loader } from '@components/UI/Loader/Loader';
+import { useAppSelector } from '@hooks/typed-react-redux-hooks';
 
 
 
 const MainPage: React.FC = () => {
-    const { isLoading } = useSelector((state: RootState) => state.app);
+    const { isLoading } = useAppSelector(s => s.app);
 
 
     return (<>

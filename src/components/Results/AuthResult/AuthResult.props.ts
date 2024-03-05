@@ -2,7 +2,7 @@ import { ResultProps } from "antd";
 
 
 
-export interface IAuthResultProps extends ResultProps {
+export type IAuthResultProps = ResultProps & {
     buttonTitle: string;
     pathFrom: string;
     pathTo?: string;

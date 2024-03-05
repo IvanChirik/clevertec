@@ -1,9 +1,9 @@
 import { API_URL } from '@config/API'
-import { ICheckEmailResponse, ILoginResponse } from '@interfaces/auth.interface'
-import { IErrorResponse } from '@interfaces/response-error.interface';
+import { ICheckEmailResponse, ILoginResponse } from '../types/auth.types'
+import { IErrorResponse } from '../types/response-error.types';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
-interface IAuthData {
+type IAuthData = {
     email: string;
     password: string;
 }

@@ -5,7 +5,8 @@ import { IFeedbackCardProps } from "./FeedbackCard.props";
 import { formatDate } from "@helpers/dataFormater";
 import UserOutlined from "@ant-design/icons/lib/icons/UserOutlined";
 import { StarFilled, StarTwoTone } from "@ant-design/icons";
-
+const { Text } = Typography;
+const { useBreakpoint } = Grid;
 
 export const FeedbackCard: FC<IFeedbackCardProps> = ({ reviewData }) => {
     const {
@@ -16,8 +17,6 @@ export const FeedbackCard: FC<IFeedbackCardProps> = ({ reviewData }) => {
         createdAt
     } = reviewData;
     const name = responseName ? (<>{responseName?.split(' ')[0]}<br />{responseName?.split(' ')[1]}</>) : 'Пользователь';
-    const { Text } = Typography;
-    const { useBreakpoint } = Grid;
     const screens = useBreakpoint();
 
     return <Card

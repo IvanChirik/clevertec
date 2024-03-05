@@ -3,8 +3,6 @@ import { FC, useEffect, useState } from "react";
 import VerificationInput from "react-verification-input";
 import styles from './ConfirmEmail.module.scss';
 import { useConfirmEmailMutation } from "@services/auth-service";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@redux/configure-store";
 import { push } from "redux-first-history";
 import { ROUTER_PATHS as Paths } from "@routes/route-paths";
 import { authActions } from "@redux/auth.slice";
@@ -12,16 +10,17 @@ import { useCheckPathname } from "@hooks/use-check-pathname";
 import { IConfirmEmailProps } from "./ConfirmEmail.props";
 import { useLocation } from "react-router-dom";
 import { appActions } from "@redux/app.slice";
+import { useAppDispatch, useAppSelector } from "@hooks/typed-react-redux-hooks";
 
 
 
 
 export const ConfirmEmail: FC<IConfirmEmailProps> = ({ pathFrom }) => {
     const [confirmEmail, { isLoading, isSuccess, isError }] = useConfirmEmailMutation();
-    const email = useSelector((s: RootState) => s.auth.confirmEmail);
+    const email = useAppSelector(s => s.auth.confirmEmail);
     const { pathname } = useLocation();
     const [verificationCode, setVerificationCode] = useState<string>('');
-    const dispatch = useDispatch<AppDispatch>();
+    const dispatch = useAppDispatch();
     useCheckPathname(pathFrom);
     useEffect(() => {
         dispatch(appActions.setIsLoading(isLoading));

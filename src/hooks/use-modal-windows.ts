@@ -2,7 +2,7 @@ import { useState } from "react";
 
 
 export const useModalWindow = () => {
-    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const showModal = () => {
         setIsModalOpen(true);
     };

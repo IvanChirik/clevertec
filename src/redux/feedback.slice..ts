@@ -1,8 +1,8 @@
-import { IFeedbackResponseData } from "@interfaces/feedback.interface";
+import { IFeedbackResponseData } from "../types/feedback.types";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 
-interface IInitialFeedbackState {
+type IInitialFeedbackState = {
     feedbacks: IFeedbackResponseData[];
 }
 
@@ -16,7 +16,6 @@ export const feedbackSlice = createSlice({
     reducers: {
         setFeedbacks: (state, action: PayloadAction<IFeedbackResponseData[]>) => {
             state.feedbacks = action.payload;
-            console.log(state.feedbacks)
         },
     },
 });

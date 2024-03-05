@@ -5,11 +5,11 @@ import { Button, Card, Grid } from "antd"
 import { Footer } from "antd/lib/layout/layout"
 import { push } from "redux-first-history";
 
+const { useBreakpoint } = Grid;
 
 
 
 export const MainFooter: React.FC = () => {
-  const { useBreakpoint } = Grid;
   const screens = useBreakpoint();
   const dispatch = useAppDispatch();
 
