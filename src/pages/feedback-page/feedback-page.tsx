@@ -1,16 +1,31 @@
 import { FeedbackCard, NotFoundFeedbackCard } from "@components/Cards/FeedbackCards";
-import { NewFeedbackModal } from "@components/ModalWindows/FeedbackModal";
+import { ErrorStatus500, NewFeedbackModal } from "@components/ModalWindows/FeedbackModal";
+import { Loader } from "@components/UI/Loader/Loader";
+import { useAppDispatch } from "@hooks/typed-react-redux-hooks";
 import { useModalWindow } from "@hooks/use-modal-windows";
+import { IErrorResponse } from "@interfaces/response-error.interface";
+import { appActions } from "@redux/app.slice";
+import { authActions } from "@redux/auth.slice";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
+import { Paths } from "@routes/index";
 import { useGetReviewsQuery, } from "@services/feedback-service";
 import { Button, Grid } from "antd";
 import { Header } from "antd/lib/layout/layout";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
+import { push } from "redux-first-history";
 
+
+type CustomError = FetchBaseQueryError & IErrorResponse
 
 const FeedbackPage: FC = () => {
     const { isModalOpen, showModal, handleCancel } = useModalWindow();
-    const { data } = useGetReviewsQuery(true);
+    const {
+        isModalOpen: isErrorModalOpen,
+        showModal: showErrorModal,
+        handleCancel: hanleErrorCancel } = useModalWindow();
+    const { data } = useGetReviewsQuery();
     const { useBreakpoint } = Grid;
+    const dispatch = useAppDispatch();
     const screens = useBreakpoint();
     const [allFeedbackVisible, setAllFeedbackVisible] = useState<boolean>(false);
     const sortedData = allFeedbackVisible ? data?.map(review => <FeedbackCard
@@ -21,9 +36,34 @@ const FeedbackPage: FC = () => {
             reviewData={review} />);
 
 
+    const {
+        isLoading,
+        isSuccess,
+        isError,
+        error
+    } = useGetReviewsQuery();
+    useEffect(() => {
+        dispatch(appActions.setIsLoading(isLoading));
+    }, [isLoading, dispatch]);
+    useEffect(() => {
+        if (isSuccess)
+            dispatch(push(Paths.Feedbacks));
+        if (isError && error) {
+            const customError = error as CustomError;
+            if (customError.data.statusCode === 403) {
+                localStorage.removeItem('access_token');
+                dispatch(authActions.setAccessToken(''))
+                dispatch(push(Paths.Auth.Login));
+                return
+            }
+            showErrorModal()
+        }
+    }, [isSuccess, isError, dispatch]);
+
     return <div style={{
         height: '100dvh'
     }}>
+        {isLoading && <Loader />}
         <Header style={{
             height: "fit-content",
             padding: "16px 24px",
@@ -50,7 +90,7 @@ const FeedbackPage: FC = () => {
             gap: '20px',
 
         }}>
-            {data?.length !== 0 &&
+            {data?.length !== 0 && isSuccess &&
                 <>
                     <div style={{
                         display: 'flex',
@@ -89,12 +129,14 @@ const FeedbackPage: FC = () => {
                     onClick={showModal}
                     type="primary">Написать отзыв</Button>
             </>}
-
         </div>
         <NewFeedbackModal
             closeHandler={handleCancel}
             open={isModalOpen}
             onCancel={handleCancel} />
+        <ErrorStatus500
+            open={isErrorModalOpen}
+            onCancel={hanleErrorCancel} />
     </div>
 };
 

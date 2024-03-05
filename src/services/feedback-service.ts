@@ -26,9 +26,9 @@ export const feedbackApi = createApi({
     }),
     tagTypes: ['Feedback'],
     endpoints: (builder) => ({
-        getReviews: builder.query<IFeedbackResponseData[], boolean>({
-            query: (clicked) => clicked ? {
-                url: '/feedbackk',
+        getReviews: builder.query<IFeedbackResponseData[], void>({
+            query: () => ({
+                url: '/feedback',
                 providesTags: (result: IFeedbackResponseData[]) =>
                     result
                         ? [
@@ -36,7 +36,7 @@ export const feedbackApi = createApi({
                             { type: 'Feedback', id: 'LIST' },
                         ]
                         : [{ type: 'Feedback', id: 'LIST' }],
-            } : '',
+            }),
             transformResponse: (response: IFeedbackResponseData[]) => response,
             transformErrorResponse: (response: { status: string | number }) => response
         }),
