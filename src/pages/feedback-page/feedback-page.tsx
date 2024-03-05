@@ -1,7 +1,7 @@
 import { FeedbackCard, NotFoundFeedbackCard } from "@components/Cards/FeedbackCards";
 import { ErrorStatus500, NewFeedbackModal } from "@components/ModalWindows/FeedbackModal";
 import { Loader } from "@components/UI/Loader/Loader";
-import { useAppDispatch } from "@hooks/typed-react-redux-hooks";
+import { useAppDispatch, useAppSelector } from "@hooks/typed-react-redux-hooks";
 import { useModalWindow } from "@hooks/use-modal-windows";
 import { IErrorResponse } from "@interfaces/response-error.interface";
 import { appActions } from "@redux/app.slice";
@@ -19,19 +19,19 @@ type CustomError = FetchBaseQueryError & IErrorResponse
 
 const FeedbackPage: FC = () => {
     const { isModalOpen, showModal, handleCancel } = useModalWindow();
+    const feedbackData = useAppSelector(s => s.feedback.feedbacks);
     const {
         isModalOpen: isErrorModalOpen,
         showModal: showErrorModal,
         handleCancel: hanleErrorCancel } = useModalWindow();
-    const { data } = useGetReviewsQuery();
     const { useBreakpoint } = Grid;
     const dispatch = useAppDispatch();
     const screens = useBreakpoint();
     const [allFeedbackVisible, setAllFeedbackVisible] = useState<boolean>(false);
-    const sortedData = allFeedbackVisible ? data?.map(review => <FeedbackCard
+    const sortedData = allFeedbackVisible ? feedbackData?.map(review => <FeedbackCard
         key={review.id}
         reviewData={review} />) :
-        data?.slice(data.length - 4, data.length).map(review => <FeedbackCard
+        feedbackData?.slice(0, 4).map(review => <FeedbackCard
             key={review.id}
             reviewData={review} />);
 
@@ -50,7 +50,7 @@ const FeedbackPage: FC = () => {
             dispatch(push(Paths.Feedbacks));
         if (isError && error) {
             const customError = error as CustomError;
-            if (customError.data.statusCode === 403) {
+            if (customError?.data?.statusCode === 403) {
                 localStorage.removeItem('access_token');
                 dispatch(authActions.setAccessToken(''))
                 dispatch(push(Paths.Auth.Login));
@@ -85,25 +85,25 @@ const FeedbackPage: FC = () => {
             height: '90%',
             display: 'flex',
             flexDirection: 'column',
-            justifyContent: `${data?.length === 0 ? 'center' : 'start'}`,
+            justifyContent: `${feedbackData?.length === 0 ? 'center' : 'start'}`,
             padding: `${screens.xs ? '16px' : '24px'}`,
             gap: '20px',
 
         }}>
-            {data?.length !== 0 && isSuccess &&
+            {feedbackData?.length !== 0 && isSuccess &&
                 <>
                     <div style={{
                         display: 'flex',
                         flexDirection: 'column',
                         gap: '20px',
-                        maxHeight: '70dvh',
+                        maxHeight: '80dvh',
                         overflowY: 'scroll'
                     }}>
                         {sortedData}
                     </div>
 
                     <div style={{
-                        marginTop: `${screens.xs ? '100px' : '150px'}`,
+                        marginTop: `${screens.xs ? '48px' : '150px'}`,
                         display: 'flex',
                         flexDirection: `${screens.xs ? 'column' : 'row'}`,
                         gap: '8px'
@@ -111,6 +111,9 @@ const FeedbackPage: FC = () => {
                         <Button
                             data-test-id='write-review'
                             onClick={showModal}
+                            style={{
+                                height: '40px'
+                            }}
                             type="primary">Написать отзыв</Button>
                         <Button
                             data-test-id='all-reviews-button'
@@ -119,7 +122,7 @@ const FeedbackPage: FC = () => {
                     </div>
                 </>
             }
-            {data?.length === 0 && <>
+            {feedbackData?.length === 0 && !isLoading && !isError && <>
                 <NotFoundFeedbackCard />
                 <Button
                     data-test-id='write-review'

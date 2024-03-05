@@ -112,7 +112,7 @@ export const LoginForm = () => {
                     children: <Form
                         form={form}
                         name="login"
-                        initialValues={{ remember: true }}
+                        initialValues={{ remember: false }}
                         onFinish={onFinish}
                         autoComplete="off"
                         style={{

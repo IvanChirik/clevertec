@@ -1,6 +1,7 @@
 import { API_URL } from '@config/API'
 import { IFeedbackResponseData } from '@interfaces/feedback.interface';
 import { RootState } from '@redux/configure-store';
+import { feedbackActions } from '@redux/feedback.slice.';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 
@@ -10,6 +11,7 @@ interface IFeedbackData {
 }
 export const feedbackApi = createApi({
     reducerPath: 'feedbackApi',
+    keepUnusedDataFor: 60,
     baseQuery: fetchBaseQuery({
         baseUrl: API_URL,
         prepareHeaders: (headers, { getState }) => {
@@ -17,38 +19,38 @@ export const feedbackApi = createApi({
             headers.set('Accept', 'application/json');
             headers.set('Set-Cookie', 'myCookie=myValue; SameSite=None; Secure');
             const token = localStorage.getItem('access_token') || (getState() as RootState).auth.accessToken;
-            console.log(token)
             headers.set('Authorization', `Bearer ${token}`);
             return headers;
         },
         credentials: 'include',
         mode: 'cors'
     }),
-    tagTypes: ['Feedback'],
+    tagTypes: ['Feedbacks'],
     endpoints: (builder) => ({
         getReviews: builder.query<IFeedbackResponseData[], void>({
-            query: () => ({
-                url: '/feedback',
-                providesTags: (result: IFeedbackResponseData[]) =>
-                    result
-                        ? [
-                            ...result.map(({ id }) => ({ type: 'Feedback' as const, id })),
-                            { type: 'Feedback', id: 'LIST' },
-                        ]
-                        : [{ type: 'Feedback', id: 'LIST' }],
-            }),
-            transformResponse: (response: IFeedbackResponseData[]) => response,
-            transformErrorResponse: (response: { status: string | number }) => response
+            query: () => {
+                return {
+                    url: '/feedback',
+                    credentials: 'include'
+                }
+            },
+            providesTags: ['Feedbacks'],
+            transformResponse: (response: IFeedbackResponseData[]) => response?.reverse() || [],
+            async onQueryStarted(_, { dispatch, queryFulfilled }) {
+                try {
+                    const { data } = await queryFulfilled;
+                    dispatch(feedbackActions.setFeedbacks(data));
+                } catch (error) { }
+            },
         }),
 
-        createReview: builder.mutation<IFeedbackResponseData, Partial<IFeedbackResponseData>>({
+        createReview: builder.mutation<{}, IFeedbackData>({
             query: (reviewData: IFeedbackData) => ({
                 url: '/feedback',
                 method: 'POST',
                 body: reviewData
             }),
-            transformErrorResponse: (response: { status: string | number }) => response,
-            invalidatesTags: [{ type: 'Feedback', id: 'LIST' }],
+            invalidatesTags: ['Feedbacks'],
         }),
 
 

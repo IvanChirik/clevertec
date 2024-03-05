@@ -9,6 +9,7 @@ import { useModalWindow } from "@hooks/use-modal-windows";
 import { ErrorModal, SuccessModal } from "..";
 import { $api } from "@config/axiosConfig";
 import { API_URL } from "@config/API";
+import { StarFilled, StarTwoTone } from "@ant-design/icons";
 
 
 export const NewFeedbackModal: FC<INewFeedbackModal> = ({ open, onCancel, closeHandler }) => {
@@ -52,6 +53,7 @@ export const NewFeedbackModal: FC<INewFeedbackModal> = ({ open, onCancel, closeH
                     data-test-id='new-review-submit-button'
                     disabled={rateValue > 0 && rateValue < 6 ? false : true}
                     style={{
+                        height: '40px',
                         width: `${screens.xs ? '100%' : 'auto'}`
                     }}
                     onClick={submitReview}
@@ -59,6 +61,9 @@ export const NewFeedbackModal: FC<INewFeedbackModal> = ({ open, onCancel, closeH
             ]}
         >
             <Rate
+                character={({ value, index }) => {
+                    return value && index! < value ? <StarFilled /> : <StarTwoTone twoToneColor="#faad14" />
+                }}
                 style={{
                     color: '#faad14',
                 }}

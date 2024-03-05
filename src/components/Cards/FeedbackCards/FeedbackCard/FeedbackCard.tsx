@@ -4,6 +4,7 @@ import { FC } from "react";
 import { IFeedbackCardProps } from "./FeedbackCard.props";
 import { formatDate } from "@helpers/dataFormater";
 import UserOutlined from "@ant-design/icons/lib/icons/UserOutlined";
+import { StarFilled, StarTwoTone } from "@ant-design/icons";
 
 
 export const FeedbackCard: FC<IFeedbackCardProps> = ({ reviewData }) => {
@@ -66,6 +67,9 @@ export const FeedbackCard: FC<IFeedbackCardProps> = ({ reviewData }) => {
                     marginBottom: '16px'
                 }}>
                 <Rate
+                    character={({ value, index }) => {
+                        return value && index! < value ? <StarFilled /> : <StarTwoTone twoToneColor="#faad14" />
+                    }}
                     style={{
                         color: '#faad14'
                     }}
