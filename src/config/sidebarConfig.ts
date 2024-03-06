@@ -6,12 +6,13 @@ import {
 import CalenderSVG from "/public/icons/calendar-icon.svg"
 import { Image } from 'antd';
 import React from 'react';
+import { Paths } from '@routes/index';
 
 const items = [
   {
     icon: CalenderSVG,
     name: 'Календарь',
-    href: '/auth',
+    href: Paths.Calendar,
   },
   {
     icon: HeartFilled,

@@ -5,7 +5,7 @@ import { AUTH_PATH, ROUTER_PATHS as Paths, RESULT_PATH } from "./route-paths";
 import { AuthResult } from "@components/Results/AuthResult/AuthResult";
 import { ChangePassword } from "@components/Forms/Auth/ChangePassword/ChangePassword";
 import { ConfirmEmail } from "@components/Forms/Auth/ConfirmEmail/ConfirmEmail";
-import { MainPage, AuthPage, FeedbackPage } from "@pages/index";
+import { MainPage, AuthPage, FeedbackPage, CalendarPage } from "@pages/index";
 import { MainLayout } from "@components/Layout";
 
 
@@ -15,6 +15,7 @@ export const routes = (
             <Route index element={<Navigate to={Paths.Main}></Navigate>} />
             <Route path={Paths.Main} element={<MainPage />} />
             <Route path={Paths.Feedbacks} element={<FeedbackPage />} />
+            <Route path={Paths.Calendar} element={<CalendarPage />} />
         </Route>
 
 

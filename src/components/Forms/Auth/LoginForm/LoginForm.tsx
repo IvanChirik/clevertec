@@ -12,7 +12,7 @@ import { useForm } from "antd/lib/form/Form";
 import { appActions } from "@redux/app.slice";
 import { API_URL } from "@config/API";
 import { useAppDispatch, useAppSelector } from "@hooks/typed-react-redux-hooks";
-import { StatusCode } from "@types/response-error.types";
+import { StatusCode } from "@src/types/response-error.types";
 const { useBreakpoint } = Grid;
 
 

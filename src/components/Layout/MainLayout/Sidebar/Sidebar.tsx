@@ -89,6 +89,7 @@ export const Sidebar = () => {
 
           {navItems.map((item, index) => (
             <Menu.Item
+              onClick={() => dispatch(push(item.href))}
               style={{
                 height: "42px",
                 margin: 0,

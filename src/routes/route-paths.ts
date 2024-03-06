@@ -5,6 +5,7 @@ export const RESULT_PATH = '/result'
 export const ROUTER_PATHS = {
     Main: '/main',
     Feedbacks: '/feedbacks',
+    Calendar: '/calendar',
     Auth: {
         Login: `${AUTH_PATH}/login`,
         Registration: `${AUTH_PATH}/registration`,

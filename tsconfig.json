@@ -40,7 +40,7 @@
             "@redux/*": [
                 "./src/redux/*"
             ],
-            "@types/*": [
+            "@src/types/*": [
                 "./src/types/*"
             ],
             "@utils/*": [

@@ -3,7 +3,7 @@ import { ErrorStatus500, NewFeedbackModal } from "@components/ModalWindows/Feedb
 import { Loader } from "@components/UI/Loader/Loader";
 import { useAppDispatch, useAppSelector } from "@hooks/typed-react-redux-hooks";
 import { useModalWindow } from "@hooks/use-modal-windows";
-import { IErrorResponse, StatusCode } from "@types/response-error.types";
+import { IErrorResponse, StatusCode } from "@src/types/response-error.types";
 import { appActions } from "@redux/app.slice";
 import { authActions } from "@redux/auth.slice";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
@@ -79,6 +79,7 @@ const FeedbackPage: FC = () => {
                     lineHeight: "18.2px"
                 }}
             ><span
+                onClick={() => dispatch(push(Paths.Main))}
                 style={{
                     color: ' #8c8c8c'
                 }}>Главная /</span> Отзывы пользователей</div></Header>
