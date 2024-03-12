@@ -6,6 +6,8 @@ import { authApi } from '@services/auth-service';
 import authSlice from './auth.slice';
 import { feedbackApi } from '@services/feedback-service';
 import feedbackSlice from './feedback.slice.';
+import trainingSlice from './training.slice';
+import { trainingApi } from '@services/training-service';
 
 const {
     createReduxHistory,
@@ -19,16 +21,19 @@ const {
 export const store = configureStore({
     reducer: combineReducers({
         app: appSlice,
-        [authApi.reducerPath]: authApi.reducer,
-        [feedbackApi.reducerPath]: feedbackApi.reducer,
         router: routerReducer,
         auth: authSlice,
-        feedback: feedbackSlice
+        feedback: feedbackSlice,
+        training: trainingSlice,
+        [authApi.reducerPath]: authApi.reducer,
+        [feedbackApi.reducerPath]: feedbackApi.reducer,
+        [trainingApi.reducerPath]: trainingApi.reducer,
     }),
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware().concat(routerMiddleware,
             authApi.middleware,
-            feedbackApi.middleware),
+            feedbackApi.middleware,
+            trainingApi.middleware),
 });
 
 

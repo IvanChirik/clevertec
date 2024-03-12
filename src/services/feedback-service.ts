@@ -44,7 +44,7 @@ export const feedbackApi = createApi({
             },
         }),
 
-        createReview: builder.mutation<{}, IFeedbackData>({
+        createReview: builder.mutation<Record<string, string>, IFeedbackData>({
             query: (reviewData: IFeedbackData) => ({
                 url: '/feedback',
                 method: 'POST',

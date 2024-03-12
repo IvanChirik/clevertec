@@ -4,12 +4,16 @@ import { Content } from "antd/lib/layout/layout"
 import React from "react";
 import CalenderIcon from "/icons/content-calendar.svg";
 import useWindowWidth from "@hooks/use-window-width";
-import { useAppSelector } from "@hooks/typed-react-redux-hooks";
+import { useAppDispatch, useAppSelector } from "@hooks/typed-react-redux-hooks";
+import { push } from "redux-first-history";
+import { Paths } from "@routes/index";
 
 
 export const MainContent: React.FC = () => {
   const collapsed = useAppSelector(s => s.app.collapsed);
-  const width = useWindowWidth()
+  const width = useWindowWidth();
+  const dispatch = useAppDispatch();
+
   return (
     <Content style={{ overflow: 'initial' }}>
       <div
@@ -84,7 +88,9 @@ export const MainContent: React.FC = () => {
               }}
               bodyStyle={{ textAlign: "center", height: "56px", padding: "12px" }}
               bordered={false} >
-              <Button type='link'>
+              <Button
+                type='link'
+                onClick={() => dispatch(push(Paths.Calendar))}>
                 <Image src={CalenderIcon} alt='Calendar' style={{
                   paddingRight: '10px'
                 }} />

@@ -82,7 +82,7 @@ const FeedbackPage: FC = () => {
                 onClick={() => dispatch(push(Paths.Main))}
                 style={{
                     color: ' #8c8c8c'
-                }}>Главная /</span> Отзывы пользователей</div></Header>
+                }}>Главная / </span> Отзывы пользователей</div></Header>
         <div style={{
             height: '90%',
             display: 'flex',

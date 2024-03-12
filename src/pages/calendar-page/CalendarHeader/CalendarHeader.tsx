@@ -1,12 +1,18 @@
 import { SettingOutlined } from "@ant-design/icons"
+import { useAppDispatch } from "@hooks/typed-react-redux-hooks";
+import { Paths } from "@routes/index";
 import { Button, Grid } from "antd"
 import { Header } from "antd/lib/layout/layout"
 import { FC } from "react";
+import { push } from "redux-first-history";
 
 const { useBreakpoint } = Grid;
 
 export const CalendarHeader: FC = () => {
     const screens = useBreakpoint();
+    const dispatch = useAppDispatch();
+
+
     return (
         <Header style={{
             height: "fit-content",
@@ -21,7 +27,11 @@ export const CalendarHeader: FC = () => {
                     fontSize: "14px",
                     lineHeight: "18.2px"
                 }}
-            >Календарь</div>
+            ><span
+                onClick={() => dispatch(push(Paths.Main))}
+                style={{
+                    color: ' #8c8c8c'
+                }}>Главная / </span>Календарь</div>
             <div
                 style={{
                     display: "flex",
