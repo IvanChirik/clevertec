@@ -37,10 +37,8 @@ export const feedbackApi = createApi({
             providesTags: ['Feedbacks'],
             transformResponse: (response: IFeedbackResponseData[]) => response?.reverse() || [],
             async onQueryStarted(_, { dispatch, queryFulfilled }) {
-                try {
-                    const { data } = await queryFulfilled;
-                    dispatch(feedbackActions.setFeedbacks(data));
-                } catch (error) { }
+                const { data } = await queryFulfilled;
+                dispatch(feedbackActions.setFeedbacks(data));
             },
         }),
 

@@ -8,6 +8,7 @@ import { feedbackApi } from '@services/feedback-service';
 import feedbackSlice from './feedback.slice.';
 import trainingSlice from './training.slice';
 import { trainingApi } from '@services/training-service';
+import { catalogApi } from '@services/catalog-service';
 
 const {
     createReduxHistory,
@@ -28,12 +29,14 @@ export const store = configureStore({
         [authApi.reducerPath]: authApi.reducer,
         [feedbackApi.reducerPath]: feedbackApi.reducer,
         [trainingApi.reducerPath]: trainingApi.reducer,
+        [catalogApi.reducerPath]: catalogApi.reducer,
     }),
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware().concat(routerMiddleware,
             authApi.middleware,
             feedbackApi.middleware,
-            trainingApi.middleware),
+            trainingApi.middleware,
+            catalogApi.middleware),
 });
 
 

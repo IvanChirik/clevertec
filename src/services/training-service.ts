@@ -33,10 +33,8 @@ export const trainingApi = createApi({
             providesTags: ['Training'],
             transformResponse: (response: TrainingData[]) => response?.reverse() || [],
             async onQueryStarted(_, { dispatch, queryFulfilled }) {
-                try {
-                    const { data } = await queryFulfilled;
-                    dispatch(trainingActions.setTraining(data));
-                } catch (error) { }
+                const { data } = await queryFulfilled;
+                dispatch(trainingActions.setTraining(data));
             },
         }),
 
