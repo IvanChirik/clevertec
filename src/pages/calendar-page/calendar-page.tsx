@@ -8,48 +8,52 @@ import ru from 'antd/es/locale/ru_RU'
 import { ErrorStatus500 } from '@components/ModalWindows/FeedbackModal';
 import { useModalWindow } from '@hooks/use-modal-windows';
 import { useGetTrainingDataQuery } from '@services/training-service';
-import { useGetCatalogTrainingListDataQuery } from '@services/catalog-service';
+import { NotFoundTrainingCatalog } from '@components/ModalWindows/CalendarModal/NotFoundTrainingCatalog/NotFoundTrainingCatalog';
+import { useGetCatalogTrainingListDataMutation } from '@services/catalog-service';
+import { CreateTraining } from '@components/ModalWindows/CalendarModal/CreateTraining/CreateTraining';
 
 
 const { useBreakpoint } = Grid;
 
 
 const CalendarPage: FC = () => {
-    const [isTrainingData, setIsTrainingData] = useState(false);
     const { data, isLoading, isError } = useGetTrainingDataQuery();
-    const { data: catalogData, isError: isCatalogError } = useGetCatalogTrainingListDataQuery(isTrainingData);
+    const [trainingList, { data: trainingData, isError: isCatalogError }] = useGetCatalogTrainingListDataMutation();
     const screens = useBreakpoint();
     const locale = ru;
     const [selectedDate, setSelectedDate] = useState(moment(new Date()));
-    const [modalVisible, setModalVisible] = useState(false);
-    const { isModalOpen: isErrorModalOpen, showModal: showErrorModal, } = useModalWindow();
+    const { isModalOpen, showModal } = useModalWindow();
+    const { isModalOpen: isCreateOpen,
+        showModal: showCreate,
+        handleCancel: handleCreate } = useModalWindow();
+    const {
+        isModalOpen: isErrorModal,
+        showModal: showErrorModal,
+        handleCancel: handleErrorModal
+    } = useModalWindow();
     useEffect(() => {
         console.log(selectedDate.format('YYYY-MMMM-DD'))
     }, [selectedDate])
     useEffect(() => {
         if (data) {
-            console.log(data)
-            setIsTrainingData(true);
+            trainingList();
+            console.log(data);
         }
         if (isError)
-            showErrorModal();
+            showModal();
     }, [data, isError]);
     useEffect(() => {
-        if (catalogData) {
-            console.log(catalogData);
+        if (trainingData) {
+            console.log(trainingData);
         }
         if (isCatalogError) {
-            console.log('error');
+            showErrorModal();
         }
-    }, [catalogData, isCatalogError]);
+    }, [trainingData, isCatalogError]);
 
     const handleDateClick = (value: Moment) => {
         setSelectedDate(value);
-        setModalVisible(true);
-    };
-
-    const handleModalClose = () => {
-        setModalVisible(false);
+        showCreate();
     };
     const dateCellRender = (value: Moment) => {
         return (
@@ -72,19 +76,20 @@ const CalendarPage: FC = () => {
                     dateCellRender={dateCellRender}
                     value={selectedDate} />
             </ConfigProvider>
-            <Modal
-                mask={false}
-                centered
-                open={modalVisible}
-                onCancel={handleModalClose}
-                footer={null}
-            >
-                Вы выбрали дату: {selectedDate?.format('YYYY-MM-DD')}
-            </Modal>
+            <CreateTraining
+                open={isCreateOpen}
+                onCancel={handleCreate}
+                selectedDate={selectedDate}
+            />
         </div>
         }
         {isError && <ErrorStatus500
-            open={isErrorModalOpen}
+            open={isModalOpen}
+        />}
+        {<NotFoundTrainingCatalog
+            getCatalogTraining={trainingList}
+            open={isErrorModal}
+            onCancel={handleErrorModal}
         />}
     </>
     );

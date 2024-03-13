@@ -21,15 +21,12 @@ export const catalogApi = createApi({
         mode: 'cors'
     }),
     endpoints: (builder) => ({
-        getCatalogTrainingListData: builder.query<TrainingList[], boolean>({
-            query: (endpointIsOpen) => {
-                if (endpointIsOpen)
-                    return {
-                        url: '/catalogs/training-list',
-                        credentials: 'include'
-                    }
-                else {
-                    return ''
+        getCatalogTrainingListData: builder.mutation<TrainingList[], void>({
+            query: () => {
+                return {
+                    url: '/catalogs/training-list',
+                    method: 'GET',
+                    credentials: 'include'
                 }
             },
             // transformResponse: (response: TrainingData[]) => response?.reverse() || [],
@@ -43,5 +40,5 @@ export const catalogApi = createApi({
 
 
 export const {
-    useGetCatalogTrainingListDataQuery
+    useGetCatalogTrainingListDataMutation
 } = catalogApi;
