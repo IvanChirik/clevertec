@@ -9,6 +9,7 @@ import feedbackSlice from './feedback.slice.';
 import trainingSlice from './training.slice';
 import { trainingApi } from '@services/training-service';
 import { catalogApi } from '@services/catalog-service';
+import catalogsSlice from './catalogs.slice.';
 
 const {
     createReduxHistory,
@@ -26,6 +27,7 @@ export const store = configureStore({
         auth: authSlice,
         feedback: feedbackSlice,
         training: trainingSlice,
+        catalogs: catalogsSlice,
         [authApi.reducerPath]: authApi.reducer,
         [feedbackApi.reducerPath]: feedbackApi.reducer,
         [trainingApi.reducerPath]: trainingApi.reducer,

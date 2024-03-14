@@ -1,4 +1,5 @@
 import { API_URL } from '@config/API'
+import { catalogsActions } from '@redux/catalogs.slice.';
 import { RootState } from '@redux/configure-store';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { TrainingList } from '@src/types/catalog.types';
@@ -29,11 +30,11 @@ export const catalogApi = createApi({
                     credentials: 'include'
                 }
             },
-            // transformResponse: (response: TrainingData[]) => response?.reverse() || [],
-            // async onQueryStarted(_, { dispatch, queryFulfilled }) {
-            //     const { data } = await queryFulfilled;
-            //     dispatch(trainingActions.setTraining(data));
-            // },
+            transformResponse: (response: TrainingList[]) => response || [],
+            async onQueryStarted(_, { dispatch, queryFulfilled }) {
+                const { data } = await queryFulfilled;
+                dispatch(catalogsActions.setTrainingList(data));
+            },
         }),
     })
 });

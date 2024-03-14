@@ -3,7 +3,7 @@ import { CalendarHeader } from './';
 import type { Moment } from 'moment';
 import moment from 'moment';
 import { Loader } from '@components/UI/Loader/Loader';
-import { Calendar, ConfigProvider, Grid, Modal } from 'antd';
+import { Calendar, ConfigProvider, Grid } from 'antd';
 import ru from 'antd/es/locale/ru_RU'
 import { ErrorStatus500 } from '@components/ModalWindows/FeedbackModal';
 import { useModalWindow } from '@hooks/use-modal-windows';

@@ -85,7 +85,7 @@ export const Sidebar = () => {
             flexDirection: "column",
             gap: "16px",
           }}
-          theme="light" mode="inline" defaultSelectedKeys={['0']}>
+          theme="light" mode="inline" >
 
           {navItems.map((item, index) => (
             <Menu.Item
