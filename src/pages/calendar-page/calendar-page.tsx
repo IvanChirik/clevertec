@@ -11,6 +11,8 @@ import { useGetTrainingDataQuery } from '@services/training-service';
 import { NotFoundTrainingCatalog } from '@components/ModalWindows/CalendarModal/NotFoundTrainingCatalog/NotFoundTrainingCatalog';
 import { useGetCatalogTrainingListDataMutation } from '@services/catalog-service';
 import { CreateTraining } from '@components/ModalWindows/CalendarModal/CreateTraining/CreateTraining';
+import { useAppDispatch } from '@hooks/typed-react-redux-hooks';
+import { trainingActions } from '@redux/training.slice';
 
 
 const { useBreakpoint } = Grid;
@@ -18,6 +20,7 @@ const { useBreakpoint } = Grid;
 
 const CalendarPage: FC = () => {
     const { data, isLoading, isError } = useGetTrainingDataQuery();
+    const dispatch = useAppDispatch();
     const [trainingList, { data: trainingData, isError: isCatalogError }] = useGetCatalogTrainingListDataMutation();
     const screens = useBreakpoint();
     const locale = ru;
@@ -53,6 +56,7 @@ const CalendarPage: FC = () => {
 
     const handleDateClick = (value: Moment) => {
         setSelectedDate(value);
+        dispatch(trainingActions.setSelectedDate(value));
         showCreate();
     };
     const dateCellRender = (value: Moment) => {

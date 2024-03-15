@@ -34,7 +34,9 @@ export const store = configureStore({
         [catalogApi.reducerPath]: catalogApi.reducer,
     }),
     middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware().concat(routerMiddleware,
+        getDefaultMiddleware({
+            serializableCheck: false
+        }).concat(routerMiddleware,
             authApi.middleware,
             feedbackApi.middleware,
             trainingApi.middleware,
