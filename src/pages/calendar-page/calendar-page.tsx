@@ -3,16 +3,18 @@ import { CalendarHeader } from './';
 import type { Moment } from 'moment';
 import moment from 'moment';
 import { Loader } from '@components/UI/Loader/Loader';
-import { Calendar, ConfigProvider, Grid } from 'antd';
-import ru from 'antd/es/locale/ru_RU'
+import { Badge, Calendar, Grid } from 'antd';
 import { ErrorStatus500 } from '@components/ModalWindows/FeedbackModal';
 import { useModalWindow } from '@hooks/use-modal-windows';
 import { useGetTrainingDataQuery } from '@services/training-service';
 import { NotFoundTrainingCatalog } from '@components/ModalWindows/CalendarModal/NotFoundTrainingCatalog/NotFoundTrainingCatalog';
 import { useGetCatalogTrainingListDataMutation } from '@services/catalog-service';
 import { CreateTraining } from '@components/ModalWindows/CalendarModal/CreateTraining/CreateTraining';
-import { useAppDispatch } from '@hooks/typed-react-redux-hooks';
+import { useAppDispatch, useAppSelector } from '@hooks/typed-react-redux-hooks';
 import { trainingActions } from '@redux/training.slice';
+import { CreateError } from '@components/ModalWindows/CalendarModal/CreateError/CreateError';
+import { colorTraining } from '@src/types/training.types';
+
 
 
 const { useBreakpoint } = Grid;
@@ -23,8 +25,10 @@ const CalendarPage: FC = () => {
     const dispatch = useAppDispatch();
     const [trainingList, { data: trainingData, isError: isCatalogError }] = useGetCatalogTrainingListDataMutation();
     const screens = useBreakpoint();
-    const locale = ru;
+    const { trainigList: training, errorModalVisible } = useAppSelector(s => s.training);
+    console.log(training)
     const [selectedDate, setSelectedDate] = useState(moment(new Date()));
+    const [previousDate, setPreviousDate] = useState(moment(new Date()));
     const { isModalOpen, showModal } = useModalWindow();
     const { isModalOpen: isCreateOpen,
         showModal: showCreate,
@@ -34,9 +38,6 @@ const CalendarPage: FC = () => {
         showModal: showErrorModal,
         handleCancel: handleErrorModal
     } = useModalWindow();
-    useEffect(() => {
-        console.log(selectedDate.format('YYYY-MMMM-DD'))
-    }, [selectedDate])
     useEffect(() => {
         if (data) {
             trainingList();
@@ -55,15 +56,22 @@ const CalendarPage: FC = () => {
     }, [trainingData, isCatalogError]);
 
     const handleDateClick = (value: Moment) => {
-        setSelectedDate(value);
-        dispatch(trainingActions.setSelectedDate(value));
-        showCreate();
+        if (new Date(value.format('YYYY-MM-DD')).getMonth() === new Date(previousDate.format('YYYY-MM-DD')).getMonth()) {
+            setSelectedDate(value);
+            dispatch(trainingActions.setSelectedDate(value));
+            showCreate();
+            return;
+        }
+        setPreviousDate(value);
+        return
     };
     const dateCellRender = (value: Moment) => {
-        return (
-            <div style={{ width: '100%', height: '100%' }} onClick={() => handleDateClick(value)}>
-            </div>
-        );
+        return <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }} onClick={() => handleDateClick(value)}>
+            {training.map(i => {
+                if (value.date() === new Date(i.date).getDate() && value.month() === new Date(i.date).getMonth())
+                    return <Badge color={colorTraining[`${i.name}`]} text={i.name} />
+            })}
+        </div>
     };
 
     return (<>
@@ -73,14 +81,12 @@ const CalendarPage: FC = () => {
             padding: '0px 24px 24px 24px',
             backgroundColor: "#F0F5FF"
         }}>
-            <ConfigProvider
-                locale={locale}>
-                <Calendar
-                    fullscreen={!screens.xs}
-                    dateCellRender={dateCellRender}
-                    value={selectedDate} />
-            </ConfigProvider>
+            <Calendar
+                fullscreen={!screens.xs}
+                dateCellRender={dateCellRender}
+                value={selectedDate} />
             <CreateTraining
+                close={handleCreate}
                 open={isCreateOpen}
                 onCancel={handleCreate}
                 selectedDate={selectedDate}
@@ -95,6 +101,7 @@ const CalendarPage: FC = () => {
             open={isErrorModal}
             onCancel={handleErrorModal}
         />}
+        <CreateError open={errorModalVisible} />
     </>
     );
 };

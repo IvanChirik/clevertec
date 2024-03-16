@@ -1,6 +1,6 @@
 import { ChangeEvent, FC, useState } from "react";
 import { CalendarDrawerType } from "./CalendarDrawer.props";
-import { Button, Card, Drawer, Grid, Input, Row } from "antd";
+import { Button, Card, Drawer, Grid, Row } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { CalendarInputBlock } from "@components/Input/CalendarInputBlock/CalendarInputBlock";
 import { BlockContent } from "@components/Input/CalendarInputBlock/CalendarInputBlock.props";
@@ -9,9 +9,9 @@ import { trainingActions } from "@redux/training.slice";
 
 const initialExerciseState = [{
     name: '',
-    approaches: '',
-    weight: '',
-    replays: ''
+    approaches: 0,
+    weight: 0,
+    replays: 0
 }];
 const { useBreakpoint } = Grid;
 
@@ -21,25 +21,28 @@ const CalendarDrawer: FC<CalendarDrawerType> = ({ open, onClose }) => {
     const dispatch = useAppDispatch();
     const [exerciseBlocks, setExerciseBlocks] = useState<BlockContent[]>(initialExerciseState);
     const addExerciseBlock = () => {
-        const newBlock = { name: '', approaches: '', weight: '', replays: '' };
+        const newBlock = { name: '', approaches: 0, weight: 0, replays: 0 };
         setExerciseBlocks([...exerciseBlocks, newBlock]);
     };
-    console.log(exerciseBlocks.map(i => i.name))
+    console.log(exerciseBlocks.map(i => i))
     const handleCloseDrawer = (e: React.MouseEvent<Element, MouseEvent> | React.KeyboardEvent<Element>) => {
         const filledBlocks = exerciseBlocks.filter(block => block.name.trim().length);
-        s('');
         setExerciseBlocks(initialExerciseState);
         dispatch(trainingActions.setSelectedExercises(filledBlocks));
         onClose?.(e);
     }
     const handleExerciseChange = (e: ChangeEvent<HTMLInputElement>, index: number, rowType: keyof BlockContent) => {
-        const newBlocks = [...exerciseBlocks];
-
-        newBlocks[index][rowType] = e.target.value;
-        setExerciseBlocks(newBlocks);
-        console.log(newBlocks)
+        setExerciseBlocks(exerciseBlocks.map((exercise, i) => {
+            if (i === index) {
+                return {
+                    ...exercise,
+                    [rowType]: rowType === 'name' ? e.target.value : +e.target.value
+                }
+            }
+            else
+                return exercise
+        }));
     };
-    const [i, s] = useState<string>();
 
     return <Drawer
         mask={false}
@@ -81,7 +84,6 @@ const CalendarDrawer: FC<CalendarDrawerType> = ({ open, onClose }) => {
                     overflowX: 'hidden',
                     overflowY: 'scroll'
                 }}>
-                <Input size="small" value={i} onChange={(e) => s(e.target.value)} />
             </div>
             <Card
                 bodyStyle={{

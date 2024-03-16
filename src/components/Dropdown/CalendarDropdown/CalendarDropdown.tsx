@@ -1,37 +1,33 @@
-import { FC, useState } from "react";
+import { FC } from "react";
 import { CalendarDropdownType } from "./CalendarDropdown.props";
 import { Dropdown, MenuProps, Space } from "antd";
 import { ArrowLeftOutlined, DownOutlined } from "@ant-design/icons";
 import { useAppDispatch, useAppSelector } from "@hooks/typed-react-redux-hooks";
 import { trainingActions } from "@redux/training.slice";
+import { TrainingName } from "@src/types/training.types";
 
 
 export const CalendarDropdown: FC<CalendarDropdownType> = ({ closeCategoryModal }) => {
+    const { trainingType } = useAppSelector(s => s.training.selectedDate)
     const trainingList = useAppSelector(s => s.catalogs.catalogTrainigList);
     const dispatch = useAppDispatch();
     const items: { label: string, key: string }[] = trainingList.map(category => { return { label: category.name, key: category.key } });
-    const [changedCategory, setChangedCategory] = useState<string>();
     const handleMenuClick: MenuProps['onClick'] = (e) => {
         switch (e.key) {
             case 'legs':
-                dispatch(trainingActions.setSelectedTraining('Ноги'));
-                setChangedCategory('Ноги');
+                dispatch(trainingActions.setSelectedTraining(TrainingName.Legs));
                 break;
             case 'hands':
-                dispatch(trainingActions.setSelectedTraining('Руки'));
-                setChangedCategory('Руки');
+                dispatch(trainingActions.setSelectedTraining(TrainingName.Hands));
                 break;
             case 'strength':
-                dispatch(trainingActions.setSelectedTraining('Силовая'));
-                setChangedCategory('Силовая');
+                dispatch(trainingActions.setSelectedTraining(TrainingName.Power));
                 break;
             case 'back':
-                dispatch(trainingActions.setSelectedTraining('Спина'));
-                setChangedCategory('Спина');
+                dispatch(trainingActions.setSelectedTraining(TrainingName.Back));
                 break;
             case 'chest':
-                dispatch(trainingActions.setSelectedTraining('Грудь'));
-                setChangedCategory('Грудь');
+                dispatch(trainingActions.setSelectedTraining(TrainingName.Chest));
                 break;
         }
     }
@@ -55,7 +51,7 @@ export const CalendarDropdown: FC<CalendarDropdownType> = ({ closeCategoryModal 
                     }}>
                     <ArrowLeftOutlined
                         onClick={closeCategoryModal} />
-                    {changedCategory ? changedCategory : 'Выбор типа тренировки'}
+                    {trainingType ? trainingType : 'Выбор типа тренировки'}
                 </div>
                 <DownOutlined />
             </Space>

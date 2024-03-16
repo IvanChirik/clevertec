@@ -3,12 +3,11 @@ import { FC } from "react";
 import { CloseCircleTwoTone } from "@ant-design/icons";
 import { CreateErrorType } from "./CreateError.props";
 import { useAppDispatch } from "@hooks/typed-react-redux-hooks";
-import { Paths } from "@routes/index";
-import { push } from "redux-first-history";
+import { trainingActions } from "@redux/training.slice";
 
 
 
-export const NotFoundTrainingCatalog: FC<CreateErrorType> = ({ open, onCancel }) => {
+export const CreateError: FC<CreateErrorType> = ({ open, onCancel }) => {
     const dispatch = useAppDispatch();
 
     return <Modal
@@ -26,7 +25,7 @@ export const NotFoundTrainingCatalog: FC<CreateErrorType> = ({ open, onCancel })
         closable={false}
         open={open}
         onCancel={onCancel}
-        footer={[<Button key="submit" type="primary" onClick={() => dispatch(push(Paths.Calendar))}>
+        footer={[<Button key="submit" type="primary" onClick={() => dispatch(trainingActions.setErrorModalVisible(false))}>
             Закрыть
         </Button>,]}>
         <span>Придётся попробовать ещё раз</span>

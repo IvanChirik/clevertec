@@ -1,6 +1,7 @@
+import { TrainingName } from "./training.types";
 
 
 export type TrainingList = {
-    name: string;
+    name: TrainingName;
     key: string;
 }

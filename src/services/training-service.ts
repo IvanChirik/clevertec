@@ -38,15 +38,18 @@ export const trainingApi = createApi({
             },
         }),
 
-        createTraining: builder.mutation<TrainingData, Omit<TrainingData, 'id' | 'userId'>>({
-            query: (body: TrainingData) => ({
-                url: '/feedback',
-                method: 'POST',
-                body
-            }),
+        createTraining: builder.mutation<TrainingData, Omit<TrainingData, '_id' | 'userId'>>({
+            query: (body: Omit<TrainingData, '_id' | 'userId'>) => {
+                console.log(body)
+                return {
+                    url: '/training',
+                    method: 'POST',
+                    body
+                }
+            },
             invalidatesTags: ['Training'],
         }),
-        editTraining: builder.mutation<TrainingData, Omit<TrainingData, 'id' | 'userId'>>({
+        editTraining: builder.mutation<TrainingData, Omit<TrainingData, '_id' | 'userId'>>({
             query(data: TrainingData) {
                 const { _id, ...body } = data
                 return {

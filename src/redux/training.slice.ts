@@ -1,4 +1,4 @@
-import { TrainingData } from "@src/types/training.types";
+import { TrainingData, TrainingName } from "@src/types/training.types";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { Moment } from "moment";
 import { BlockContent } from "@components/Input/CalendarInputBlock/CalendarInputBlock.props";
@@ -6,20 +6,22 @@ import { BlockContent } from "@components/Input/CalendarInputBlock/CalendarInput
 
 type SelectedDateData = {
     date?: Moment;
-    trainingType?: string;
-    exercises: BlockContent[]
+    trainingType?: TrainingName;
+    exercises: BlockContent[];
 }
 
 type InitialTrainingState = {
     trainigList: TrainingData[];
-    selectedDate: SelectedDateData
+    selectedDate: SelectedDateData;
+    errorModalVisible: boolean;
 }
 
 const initialTrainingState: InitialTrainingState = {
     trainigList: [],
     selectedDate: {
         exercises: []
-    }
+    },
+    errorModalVisible: false
 };
 
 export const trainingSlice = createSlice({
@@ -32,7 +34,7 @@ export const trainingSlice = createSlice({
         setSelectedDate: (state, action: PayloadAction<Moment>) => {
             state.selectedDate.date = action.payload;
         },
-        setSelectedTraining: (state, action: PayloadAction<string>) => {
+        setSelectedTraining: (state, action: PayloadAction<TrainingName | undefined>) => {
             state.selectedDate.trainingType = action.payload;
         },
         setSelectedExercises: (state, action: PayloadAction<BlockContent[]>) => {
@@ -42,6 +44,9 @@ export const trainingSlice = createSlice({
             state.selectedDate = {
                 exercises: []
             }
+        },
+        setErrorModalVisible: (state, action: PayloadAction<boolean>) => {
+            state.errorModalVisible = action.payload;
         },
     },
 });

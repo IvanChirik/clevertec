@@ -1,27 +1,49 @@
 import { FC, useEffect, useState } from "react";
 import { CreateTrainingType } from "./CreateTraining.props";
-import { Button, Image, Modal, Row } from "antd";
+import { Badge, Button, Image, Modal, Row } from "antd";
 import ExercisesCard from '@public/icons/exercises-card-icon.svg';
 import { CalendarDropdown } from "@components/Dropdown/CalendarDropdown/CalendarDropdown";
 import CalendarDrawer from "@components/Drawer/CalendarDrawer/CalendarDrawer";
 import { useAppDispatch, useAppSelector } from "@hooks/typed-react-redux-hooks";
 import { trainingActions } from "@redux/training.slice";
 import { EditTwoTone } from "@ant-design/icons";
+import { useCreateTrainingMutation } from "@services/training-service";
+import { ExerciseData, TrainingName, colorTraining } from "@src/types/training.types";
 
 
-export const CreateTraining: FC<CreateTrainingType> = ({ open, onCancel, selectedDate }) => {
+export const CreateTraining: FC<CreateTrainingType> = ({ open, onCancel, close, selectedDate }) => {
     const dispatch = useAppDispatch();
-    const { trainingType, exercises } = useAppSelector(s => s.training.selectedDate)
+    const [createTraining, { isSuccess, isError }] = useCreateTrainingMutation();
+    const { trainigList } = useAppSelector(s => s.training)
+    const dateTrainingList = trainigList.filter(training =>
+        new Date(training.date).getDate() === new Date(selectedDate.format()).getDate() &&
+        new Date(training.date).getMonth() === new Date(selectedDate.format()).getMonth());
+    const { date, trainingType, exercises } = useAppSelector(s => s.training.selectedDate);
+    const catalogList = useAppSelector(s => s.catalogs.catalogTrainigList);
     const [isTrainingType, setIsTrainingType] = useState(false);
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const handlerCloseModal = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
         onCancel?.(e);
         dispatch(trainingActions.clearSelectedDate());
     }
+    const editTraining = (editExercises: ExerciseData[], trainingName: TrainingName) => {
+        dispatch(trainingActions.setSelectedTraining(trainingName))
+        dispatch(trainingActions.setSelectedExercises(editExercises))
+        setIsTrainingType(true);
+    }
     useEffect(() => {
         if (!isTrainingType)
-            dispatch(trainingActions.setSelectedTraining(''));
-    }, [isTrainingType])
+            dispatch(trainingActions.setSelectedTraining(undefined));
+    }, [isTrainingType]);
+    useEffect(() => {
+        if (isSuccess)
+            setIsTrainingType(false);
+        if (isError) {
+            setIsTrainingType(false);
+            close();
+            dispatch(trainingActions.setErrorModalVisible(true))
+        }
+    }, [isError, isSuccess])
 
     if (!isTrainingType)
         return <Modal
@@ -43,7 +65,7 @@ export const CreateTraining: FC<CreateTrainingType> = ({ open, onCancel, selecte
                 <div>
                     Тренировки на {selectedDate?.format('DD.MM.YYYY')}
                 </div>
-                <div>Нет активных тренировок</div>
+                {dateTrainingList.length ? null : <div>Нет активных тренировок</div>}
             </div>}
             mask={false}
             centered
@@ -56,10 +78,23 @@ export const CreateTraining: FC<CreateTrainingType> = ({ open, onCancel, selecte
                         width: '100%',
                         height: '40px'
                     }}
+                    disabled={
+                        new Date(selectedDate?.format()) <= new Date()
+                        ||
+                        catalogList.length === dateTrainingList.length}
                     type="primary">Создать тренировку</Button>
             ]}
         >
-            <Image src={ExercisesCard} preview={false}></Image>
+            {
+                dateTrainingList.length ?
+                    dateTrainingList.map(trainig =>
+                        <Row justify='space-between'>
+                            <Badge color={colorTraining[`${trainig.name}`]} text={trainig.name} />
+                            <EditTwoTone
+                                onClick={() => editTraining(trainig.exercises, trainig.name)}
+                            />
+                        </Row>) :
+                    <Image src={ExercisesCard} preview={false}></Image>}
         </Modal>
     else
         return <>
@@ -80,7 +115,6 @@ export const CreateTraining: FC<CreateTrainingType> = ({ open, onCancel, selecte
                 mask={false}
                 centered
                 open={open}
-                onCancel={onCancel}
                 footer={[
                     <Button
                         disabled={!trainingType}
@@ -91,7 +125,12 @@ export const CreateTraining: FC<CreateTrainingType> = ({ open, onCancel, selecte
                         }}
                         type="ghost">Добавить упражнения</Button>,
                     <Button
-                        disabled
+                        onClick={() => {
+                            date
+                                && trainingType
+                                && createTraining({ name: trainingType, date: date?.format(), exercises: exercises })
+                        }}
+                        disabled={!exercises.length}
                         style={{
                             margin: '0px',
                             width: '100%',

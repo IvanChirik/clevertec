@@ -1,4 +1,4 @@
 import { ModalProps } from "antd";
 
 
-export type CreateErrorType = ModalProps & {}
+export type CreateErrorType = ModalProps;
