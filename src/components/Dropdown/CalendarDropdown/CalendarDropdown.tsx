@@ -7,11 +7,17 @@ import { trainingActions } from "@redux/training.slice";
 import { TrainingName } from "@src/types/training.types";
 
 
-export const CalendarDropdown: FC<CalendarDropdownType> = ({ closeCategoryModal }) => {
+export const CalendarDropdown: FC<CalendarDropdownType> = ({ closeCategoryModal, writedTrainings }) => {
     const { trainingType } = useAppSelector(s => s.training.selectedDate)
     const trainingList = useAppSelector(s => s.catalogs.catalogTrainigList);
     const dispatch = useAppDispatch();
-    const items: { label: string, key: string }[] = trainingList.map(category => { return { label: category.name, key: category.key } });
+    const items:
+        {
+            label: string,
+            key: string
+        }[] = trainingList
+            .filter(category => !writedTrainings.includes(category.name))
+            .map(category => { return { label: category.name, key: category.key } });
     const handleMenuClick: MenuProps['onClick'] = (e) => {
         switch (e.key) {
             case 'legs':

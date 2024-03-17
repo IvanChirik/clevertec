@@ -68,7 +68,9 @@ const CalendarPage: FC = () => {
     const dateCellRender = (value: Moment) => {
         return <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }} onClick={() => handleDateClick(value)}>
             {training.map(i => {
-                if (value.date() === new Date(i.date).getDate() && value.month() === new Date(i.date).getMonth())
+                if (value.date() === new Date(i.date).getDate() && value.month() === new Date(i.date).getMonth()
+                    &&
+                    trainingData?.length)
                     return <Badge color={colorTraining[`${i.name}`]} text={i.name} />
             })}
         </div>

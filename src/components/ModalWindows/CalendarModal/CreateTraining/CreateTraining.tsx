@@ -81,12 +81,12 @@ export const CreateTraining: FC<CreateTrainingType> = ({ open, onCancel, close, 
                     disabled={
                         new Date(selectedDate?.format()) <= new Date()
                         ||
-                        catalogList.length === dateTrainingList.length}
-                    type="primary">Создать тренировку</Button>
+                        catalogList.length === dateTrainingList.length || !catalogList.length}
+                    type="primary">{dateTrainingList.length ? 'Добавить' : 'Создать'} тренировку</Button>
             ]}
         >
             {
-                dateTrainingList.length ?
+                dateTrainingList.length && catalogList.length ?
                     dateTrainingList.map(trainig =>
                         <Row justify='space-between'>
                             <Badge color={colorTraining[`${trainig.name}`]} text={trainig.name} />
@@ -110,7 +110,9 @@ export const CreateTraining: FC<CreateTrainingType> = ({ open, onCancel, close, 
                     textAlign: 'center'
                 }}
 
-                title={<CalendarDropdown closeCategoryModal={() => setIsTrainingType(false)} />}
+                title={<CalendarDropdown
+                    writedTrainings={dateTrainingList.map(training => training.name)}
+                    closeCategoryModal={() => setIsTrainingType(false)} />}
                 closable={false}
                 mask={false}
                 centered
