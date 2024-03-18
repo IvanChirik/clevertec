@@ -13,6 +13,7 @@ type SelectedDateData = {
 type InitialTrainingState = {
     trainigList: TrainingData[];
     selectedDate: SelectedDateData;
+    isExerciseEdit: boolean;
     errorModalVisible: boolean;
 }
 
@@ -21,6 +22,7 @@ const initialTrainingState: InitialTrainingState = {
     selectedDate: {
         exercises: []
     },
+    isExerciseEdit: false,
     errorModalVisible: false
 };
 
@@ -47,6 +49,9 @@ export const trainingSlice = createSlice({
         },
         setErrorModalVisible: (state, action: PayloadAction<boolean>) => {
             state.errorModalVisible = action.payload;
+        },
+        setIsExerciseEdit: (state, action: PayloadAction<boolean>) => {
+            state.isExerciseEdit = action.payload;
         },
     },
 });

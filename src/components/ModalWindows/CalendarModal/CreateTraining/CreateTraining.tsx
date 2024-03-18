@@ -14,7 +14,7 @@ import { ExerciseData, TrainingName, colorTraining } from "@src/types/training.t
 export const CreateTraining: FC<CreateTrainingType> = ({ open, onCancel, close, selectedDate }) => {
     const dispatch = useAppDispatch();
     const [createTraining, { isSuccess, isError }] = useCreateTrainingMutation();
-    const { trainigList } = useAppSelector(s => s.training)
+    const { trainigList, isExerciseEdit } = useAppSelector(s => s.training);
     const dateTrainingList = trainigList.filter(training =>
         new Date(training.date).getDate() === new Date(selectedDate.format()).getDate() &&
         new Date(training.date).getMonth() === new Date(selectedDate.format()).getMonth());
@@ -27,8 +27,9 @@ export const CreateTraining: FC<CreateTrainingType> = ({ open, onCancel, close, 
         dispatch(trainingActions.clearSelectedDate());
     }
     const editTraining = (editExercises: ExerciseData[], trainingName: TrainingName) => {
-        dispatch(trainingActions.setSelectedTraining(trainingName))
-        dispatch(trainingActions.setSelectedExercises(editExercises))
+        dispatch(trainingActions.setSelectedTraining(trainingName));
+        dispatch(trainingActions.setSelectedExercises(editExercises));
+        dispatch(trainingActions.setIsExerciseEdit(true));
         setIsTrainingType(true);
     }
     useEffect(() => {
@@ -138,12 +139,15 @@ export const CreateTraining: FC<CreateTrainingType> = ({ open, onCancel, close, 
                             width: '100%',
                             height: '40px'
                         }}
-                        type="link">Сохранить</Button>
+                        type="link"> Сохранить {isExerciseEdit ? 'изменения' : ''}</Button>
                 ]}
             >
-                {exercises.map(exercise => <Row justify={'space-between'}>{exercise.name}<EditTwoTone /></Row>)}
+                {exercises.map(exercise => <Row justify={'space-between'}>{exercise.name}<EditTwoTone
+                    onClick={() => setIsDrawerOpen(true)} /></Row>)}
             </Modal>
-            <CalendarDrawer open={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} />
+            <CalendarDrawer
+                open={isDrawerOpen}
+                onClose={() => setIsDrawerOpen(false)} />
         </>
 };
 

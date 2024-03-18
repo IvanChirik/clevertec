@@ -11,6 +11,10 @@ export const CalendarDropdown: FC<CalendarDropdownType> = ({ closeCategoryModal,
     const { trainingType } = useAppSelector(s => s.training.selectedDate)
     const trainingList = useAppSelector(s => s.catalogs.catalogTrainigList);
     const dispatch = useAppDispatch();
+    const exitHandler = () => {
+        closeCategoryModal();
+        dispatch(trainingActions.setIsExerciseEdit(false));
+    }
     const items:
         {
             label: string,
@@ -56,7 +60,7 @@ export const CalendarDropdown: FC<CalendarDropdownType> = ({ closeCategoryModal,
                         gap: '10px'
                     }}>
                     <ArrowLeftOutlined
-                        onClick={closeCategoryModal} />
+                        onClick={exitHandler} />
                     {trainingType ? trainingType : 'Выбор типа тренировки'}
                 </div>
                 <DownOutlined />

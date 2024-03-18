@@ -1,33 +1,31 @@
 import { ChangeEvent, FC, useState } from "react";
 import { CalendarDrawerType } from "./CalendarDrawer.props";
-import { Button, Card, Drawer, Grid, Row } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
+import { Badge, Button, Card, Drawer, Grid, Row } from "antd";
+import { EditOutlined, PlusOutlined } from "@ant-design/icons";
 import { CalendarInputBlock } from "@components/Input/CalendarInputBlock/CalendarInputBlock";
 import { BlockContent } from "@components/Input/CalendarInputBlock/CalendarInputBlock.props";
 import { useAppDispatch, useAppSelector } from "@hooks/typed-react-redux-hooks";
 import { trainingActions } from "@redux/training.slice";
+import { colorTraining } from "@src/types/training.types";
+import { DrawerForm } from "@components/Forms/Calendar/DrawerForm";
 
-const initialExerciseState = [{
-    name: '',
-    approaches: 0,
-    weight: 0,
-    replays: 0
-}];
+
 const { useBreakpoint } = Grid;
 
 const CalendarDrawer: FC<CalendarDrawerType> = ({ open, onClose }) => {
+    const { exercises } = useAppSelector(s => s.training.selectedDate)
     const screens = useBreakpoint();
     const selectedData = useAppSelector(s => s.training.selectedDate);
     const dispatch = useAppDispatch();
-    const [exerciseBlocks, setExerciseBlocks] = useState<BlockContent[]>(initialExerciseState);
+    const { isExerciseEdit } = useAppSelector(s => s.training)
+    const [exerciseBlocks, setExerciseBlocks] = useState<BlockContent[]>(exercises);
     const addExerciseBlock = () => {
         const newBlock = { name: '', approaches: 0, weight: 0, replays: 0 };
         setExerciseBlocks([...exerciseBlocks, newBlock]);
     };
-    console.log(exerciseBlocks.map(i => i))
     const handleCloseDrawer = (e: React.MouseEvent<Element, MouseEvent> | React.KeyboardEvent<Element>) => {
         const filledBlocks = exerciseBlocks.filter(block => block.name.trim().length);
-        setExerciseBlocks(initialExerciseState);
+
         dispatch(trainingActions.setSelectedExercises(filledBlocks));
         onClose?.(e);
     }
@@ -46,7 +44,7 @@ const CalendarDrawer: FC<CalendarDrawerType> = ({ open, onClose }) => {
 
     return <Drawer
         mask={false}
-        title={<><PlusOutlined /> Добавление упражнений</>}
+        title={isExerciseEdit ? <>< EditOutlined /> Редактирование</> : <><PlusOutlined />Добавление упражнений</>}
         placement={screens.xs ? 'bottom' : 'right'}
         onClose={(e) => handleCloseDrawer(e)}
         open={open}>
@@ -57,55 +55,25 @@ const CalendarDrawer: FC<CalendarDrawerType> = ({ open, onClose }) => {
         }}>
             <Row
                 justify={'space-between'}>
-                <span>{selectedData?.trainingType}</span>
+                <Badge color={colorTraining[`${selectedData?.trainingType!}`]} text={selectedData?.trainingType} />
                 <span>{selectedData?.date?.format('DD.MM.YYYY')}</span>
-            </Row>
-            <div
+            </Row> <div
                 style={{
-                    maxHeight: '80dvh',
+                    maxHeight: '85dvh',
                     display: 'flex',
                     flexDirection: 'column',
                     gap: '10px',
-                    overflowX: 'hidden',
+                    overflowX: 'unset',
                     overflowY: 'scroll'
                 }}>
-                {exerciseBlocks.map((block, index) => <CalendarInputBlock
-                    key={Math.random() * 10}
-                    index={index}
-                    handleChange={handleExerciseChange}
-                    blockContent={block} />)}
+                <DrawerForm />
+                {/* {exerciseBlocks.map((block, index) => <CalendarInputBlock
+                        key={Math.random() * 10}
+                        index={index}
+                        handleChange={handleExerciseChange}
+                        blockContent={block} />)} */}
             </div>
-            <div
-                style={{
-                    maxHeight: '80dvh',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '10px',
-                    overflowX: 'hidden',
-                    overflowY: 'scroll'
-                }}>
-            </div>
-            <Card
-                bodyStyle={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '10px',
-                    padding: '24px 0px',
-                    backgroundColor: ' #f0f0f0',
-                    height: '24px'
-                }} >
-                <Button
-                    style={{
-                        width: '100%',
-                        textAlign: 'left'
-                    }}
-                    onClick={addExerciseBlock}
-                    type="link">
-                    <PlusOutlined /> Добавить ещё
-                </Button>
-            </Card>
         </div>
-
     </Drawer>
 };
 
