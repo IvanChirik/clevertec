@@ -49,7 +49,7 @@ export const trainingApi = createApi({
             },
             invalidatesTags: ['Training'],
         }),
-        editTraining: builder.mutation<TrainingData, Omit<TrainingData, '_id' | 'userId'>>({
+        editTraining: builder.mutation<TrainingData, Omit<TrainingData, 'userId'>>({
             query(data: TrainingData) {
                 const { _id, ...body } = data
                 return {

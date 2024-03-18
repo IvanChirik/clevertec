@@ -1,16 +1,28 @@
 import { FC, useEffect } from 'react';
 import { DrawerFormType } from './DrawerForm.props';
-import { Button, Card, Form, Input, InputNumber } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
-import { useAppSelector } from '@hooks/typed-react-redux-hooks';
+import { Button, Card, Checkbox, Form, Input, InputNumber } from 'antd';
+import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
+import { useAppDispatch, useAppSelector } from '@hooks/typed-react-redux-hooks';
+import { trainingActions } from '@redux/training.slice';
+import { BlockContent } from '@components/Input/CalendarInputBlock/CalendarInputBlock.props';
+import { CheckboxChangeEvent } from 'antd/lib/checkbox';
 
+type FormField = {
+    exercises: BlockContent[];
+}
 const initialExerciseState = {
     name: '',
-};
+}
 
-export const DrawerForm: FC<DrawerFormType> = () => {
-    const [form] = Form.useForm();
+
+export const DrawerForm: FC<DrawerFormType> = ({ setCloseDrawer, closeDrawer }) => {
+    const dispatch = useAppDispatch();
+    const [form] = Form.useForm<FormField>();
     const { exercises } = useAppSelector(s => s.training.selectedDate);
+    const { isExerciseEdit } = useAppSelector(s => s.training)
+    const handleChange = (e: CheckboxChangeEvent) => {
+        console.log(`checked = ${e.target.checked}`);
+    };
     useEffect(() => {
         if (exercises.length)
             form.setFieldsValue({
@@ -21,12 +33,12 @@ export const DrawerForm: FC<DrawerFormType> = () => {
                 exercises: [initialExerciseState]
             });
     }, []);
-    const handleSubmit = () => {
-        form.submit();
-    }
     useEffect(() => {
-        console.log(form.getFieldsValue());
-    }, form.getFieldsValue())
+        if (closeDrawer) {
+            const filledBlocks = form.getFieldsValue().exercises.filter(block => block.name.trim().length);
+            dispatch(trainingActions.setSelectedExercises(filledBlocks));
+        }
+    }, [closeDrawer])
 
     return <Form form={form} name="dynamic_form_nest_item" autoComplete="off">
         <Form.List name="exercises">
@@ -41,7 +53,8 @@ export const DrawerForm: FC<DrawerFormType> = () => {
                                     {...restField}
                                     name={[name, 'name']}
                                 >
-                                    <Input size='small' placeholder="Упражнение" />
+                                    <Input addonAfter={isExerciseEdit && <Form.Item><Checkbox onChange={handleChange} /></Form.Item>
+                                    } size='small' placeholder="Упражнение" />
                                 </Form.Item>
                             </div>
                             <div key={key} style={{ display: 'flex' }}>
@@ -63,6 +76,7 @@ export const DrawerForm: FC<DrawerFormType> = () => {
                                     >
 
                                         <InputNumber
+                                            min={1}
                                             addonBefore={<PlusOutlined />}
                                             size='small'
                                             placeholder="1" />
@@ -84,7 +98,7 @@ export const DrawerForm: FC<DrawerFormType> = () => {
                                         {...restField}
                                         name={[name, 'weight']}
                                     >
-                                        <InputNumber size='small' placeholder="0" />
+                                        <InputNumber min={0} size='small' placeholder="0" />
                                     </Form.Item></div>
                                 <div> <Card
                                     bodyStyle={{
@@ -99,8 +113,7 @@ export const DrawerForm: FC<DrawerFormType> = () => {
                                     {...restField}
                                     name={[name, 'replays']}
                                 >
-
-                                        <InputNumber size='small' placeholder="3" />
+                                        <InputNumber min={1} size='small' placeholder="3" />
                                     </Form.Item></div>
                             </div>
                         </div>
@@ -124,6 +137,15 @@ export const DrawerForm: FC<DrawerFormType> = () => {
                                 type="link">
                                 <PlusOutlined /> Добавить ещё
                             </Button>
+                            {isExerciseEdit && <Button
+                                disabled
+                                type="link"
+                                style={{
+                                    color: '#262626'
+                                }}
+                            >
+                                <MinusOutlined />Удалить
+                            </Button>}
                         </Card>
                     </Form.Item>
                 </>

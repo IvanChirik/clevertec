@@ -7,13 +7,15 @@ import CalendarDrawer from "@components/Drawer/CalendarDrawer/CalendarDrawer";
 import { useAppDispatch, useAppSelector } from "@hooks/typed-react-redux-hooks";
 import { trainingActions } from "@redux/training.slice";
 import { EditTwoTone } from "@ant-design/icons";
-import { useCreateTrainingMutation } from "@services/training-service";
+import { useCreateTrainingMutation, useEditTrainingMutation } from "@services/training-service";
 import { ExerciseData, TrainingName, colorTraining } from "@src/types/training.types";
 
 
 export const CreateTraining: FC<CreateTrainingType> = ({ open, onCancel, close, selectedDate }) => {
     const dispatch = useAppDispatch();
+    const [exerciseId, setExerciseId] = useState<string>();
     const [createTraining, { isSuccess, isError }] = useCreateTrainingMutation();
+    const [editExercise, { isSuccess: isEditSuccess, isError: isEditError }] = useEditTrainingMutation();
     const { trainigList, isExerciseEdit } = useAppSelector(s => s.training);
     const dateTrainingList = trainigList.filter(training =>
         new Date(training.date).getDate() === new Date(selectedDate.format()).getDate() &&
@@ -26,7 +28,17 @@ export const CreateTraining: FC<CreateTrainingType> = ({ open, onCancel, close, 
         onCancel?.(e);
         dispatch(trainingActions.clearSelectedDate());
     }
-    const editTraining = (editExercises: ExerciseData[], trainingName: TrainingName) => {
+    const createOrEditTraining = () => {
+        if (date && trainingType) {
+            if (isExerciseEdit && exerciseId) {
+                editExercise({ _id: exerciseId, name: trainingType, date: date?.format(), exercises: exercises });
+                return;
+            }
+            createTraining({ name: trainingType, date: date?.format(), exercises: exercises });
+        }
+    };
+    const editTraining = (editExercises: ExerciseData[], trainingName: TrainingName, id: string) => {
+        setExerciseId(id);
         dispatch(trainingActions.setSelectedTraining(trainingName));
         dispatch(trainingActions.setSelectedExercises(editExercises));
         dispatch(trainingActions.setIsExerciseEdit(true));
@@ -37,14 +49,17 @@ export const CreateTraining: FC<CreateTrainingType> = ({ open, onCancel, close, 
             dispatch(trainingActions.setSelectedTraining(undefined));
     }, [isTrainingType]);
     useEffect(() => {
-        if (isSuccess)
+        if (isSuccess || isEditSuccess) {
             setIsTrainingType(false);
-        if (isError) {
+            dispatch(trainingActions.setSelectedExercises([]));
+        }
+        if (isError || isEditError) {
             setIsTrainingType(false);
             close();
-            dispatch(trainingActions.setErrorModalVisible(true))
+            dispatch(trainingActions.setErrorModalVisible(true));
+            dispatch(trainingActions.setSelectedExercises([]));
         }
-    }, [isError, isSuccess])
+    }, [isError, isSuccess, isEditSuccess, isEditError])
 
     if (!isTrainingType)
         return <Modal
@@ -92,7 +107,7 @@ export const CreateTraining: FC<CreateTrainingType> = ({ open, onCancel, close, 
                         <Row justify='space-between'>
                             <Badge color={colorTraining[`${trainig.name}`]} text={trainig.name} />
                             <EditTwoTone
-                                onClick={() => editTraining(trainig.exercises, trainig.name)}
+                                onClick={() => editTraining(trainig.exercises, trainig.name, trainig._id)}
                             />
                         </Row>) :
                     <Image src={ExercisesCard} preview={false}></Image>}
@@ -128,11 +143,7 @@ export const CreateTraining: FC<CreateTrainingType> = ({ open, onCancel, close, 
                         }}
                         type="ghost">Добавить упражнения</Button>,
                     <Button
-                        onClick={() => {
-                            date
-                                && trainingType
-                                && createTraining({ name: trainingType, date: date?.format(), exercises: exercises })
-                        }}
+                        onClick={createOrEditTraining}
                         disabled={!exercises.length}
                         style={{
                             margin: '0px',
